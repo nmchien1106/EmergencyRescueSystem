@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
 
 namespace RescueSystem.Infrastructure
 {
@@ -18,7 +17,9 @@ namespace RescueSystem.Infrastructure
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(
+                    connectionString,
+                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
             });
 
             // Add Identity services

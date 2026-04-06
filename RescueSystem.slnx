@@ -1,8 +1,8 @@
 <Solution>
   <Folder Name="/docs/">
-    <File Path="cqrs.md" />
     <File Path="docs/clean_architecture.md" />
-    <File Path="entities.md" />
+    <File Path="docs/cqrs.md" />
+    <File Path="docs/entities.md" />
   </Folder>
   <Folder Name="/setup/">
     <File Path="README.md" />

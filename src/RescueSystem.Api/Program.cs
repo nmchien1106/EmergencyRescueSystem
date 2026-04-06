@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using RescueSystem.Application;
 using RescueSystem.Infrastructure;
 using RescueSystem.Infrastructure.Data;
+using RescueSystem.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,25 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+    try
+    {
+        // Apply pending migrations
+        dbContext.Database.Migrate();
+
+        // Seed roles
+        await SeedRoles(roleManager);
+
+        // Seed default admin user
+        await SeedAdminUser(userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -44,3 +65,48 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// Helper methods for seeding
+static async Task SeedRoles(RoleManager<Role> roleManager)
+{
+    var roles = new[] { "Citizen", "Rescuer", "Dispatcher", "Commander" };
+
+    foreach (var roleName in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new Role 
+            { 
+                Name = roleName,
+                Description = $"{roleName} role"
+            });
+        }
+    }
+}
+
+static async Task SeedAdminUser(UserManager<User> userManager, RoleManager<Role> roleManager)
+{
+    const string adminEmail = "admin@rescuesystem.com";
+    const string adminPassword = "Admin@123456";
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        var newAdminUser = new User
+        {
+            UserName = "admin",
+            Email = adminEmail,
+            FullName = "System Administrator",
+            IsActive = true,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(newAdminUser, adminPassword);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(newAdminUser, "Commander");
+        }
+    }
+}
