@@ -108,23 +108,6 @@ namespace RescueSystem.Api.Controllers
         /// <summary>
         /// Change user password
         /// </summary>
-        [HttpPost("{userId}/change-password")]
-        public async Task<ActionResult<object>> ChangePassword(Guid userId, [FromBody] ChangePasswordDto changePasswordDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var (success, message) = await _userService.ChangePasswordAsync(userId, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
-
-            if (success)
-            {
-                _logger.LogInformation($"Password changed for user: {userId}");
-                return Ok(new { message });
-            }
-
-            _logger.LogWarning($"Failed to change password: {message}");
-            return BadRequest(new { message });
-        }
     }
 
     public class ChangePasswordDto

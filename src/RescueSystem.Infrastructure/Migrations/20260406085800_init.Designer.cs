@@ -12,7 +12,7 @@ using RescueSystem.Infrastructure.Data;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260406083751_init")]
+    [Migration("20260406085800_init")]
     partial class init
     {
         /// <inheritdoc />
