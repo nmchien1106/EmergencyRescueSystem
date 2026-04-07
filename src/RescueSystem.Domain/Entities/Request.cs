@@ -22,7 +22,7 @@ namespace RescueSystem.Domain.Entities
         public DateTime SubmittedTime { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public User? RequestedBy { get; set; }
+        public ApplicationUser? RequestedBy { get; set; }
         public Location? Location { get; set; }
         public ICollection<Mission> Missions { get; set; } = new List<Mission>();
     }

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Data;
+using RescueSystem.Application.Interfaces.Respositories;
+using RescueSystem.Infrastructure.Persistence.Responsitories;
 
 namespace RescueSystem.Infrastructure
 {
@@ -23,7 +25,7 @@ namespace RescueSystem.Infrastructure
             });
 
             // Add Identity services
-            services.AddIdentity<User, Role>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = false;
@@ -33,6 +35,9 @@ namespace RescueSystem.Infrastructure
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+            //
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

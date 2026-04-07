@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RescueSystem.Domain.Entities
 {
-    public class User : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>
     {
         public string FullName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;

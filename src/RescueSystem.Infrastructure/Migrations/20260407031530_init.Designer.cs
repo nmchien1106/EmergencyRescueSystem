@@ -12,7 +12,7 @@ using RescueSystem.Infrastructure.Data;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260406085800_init")]
+    [Migration("20260407031530_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace RescueSystem.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationUserRescueTeam", b =>
+                {
+                    b.Property<Guid>("MembersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TeamsAsMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MembersId", "TeamsAsMemberId");
+
+                    b.HasIndex("TeamsAsMemberId");
+
+                    b.ToTable("TeamMembers", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -167,6 +182,150 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Contact", b =>
@@ -436,168 +595,24 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.ToTable("RescueTeams", (string)null);
                 });
 
-            modelBuilder.Entity("RescueSystem.Domain.Entities.Role", b =>
+            modelBuilder.Entity("ApplicationUserRescueTeam", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("Roles", (string)null);
-                });
-
-            modelBuilder.Entity("RescueSystem.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Avatar")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("RescueTeamUser", b =>
-                {
-                    b.Property<Guid>("MembersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TeamsAsMemberId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MembersId", "TeamsAsMemberId");
-
-                    b.HasIndex("TeamsAsMemberId");
-
-                    b.ToTable("TeamMembers", (string)null);
+                    b.HasOne("RescueSystem.Domain.Entities.RescueTeam", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsAsMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.Role", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -606,7 +621,7 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -615,7 +630,7 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -624,13 +639,13 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.Role", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RescueSystem.Domain.Entities.User", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -639,7 +654,7 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", null)
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -648,7 +663,7 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", "Dispatcher")
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "Dispatcher")
                         .WithMany("DispatchedMissions")
                         .HasForeignKey("DispatcherId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -675,7 +690,7 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Report", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", "CreatedBy")
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "CreatedBy")
                         .WithMany("Reports")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -700,7 +715,7 @@ namespace RescueSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RescueSystem.Domain.Entities.User", "RequestedBy")
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "RequestedBy")
                         .WithMany("Requests")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -719,7 +734,7 @@ namespace RescueSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RescueSystem.Domain.Entities.User", "TeamLeader")
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "TeamLeader")
                         .WithMany("LeadingTeams")
                         .HasForeignKey("TeamLeaderId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -730,19 +745,15 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("TeamLeader");
                 });
 
-            modelBuilder.Entity("RescueTeamUser", b =>
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("DispatchedMissions");
 
-                    b.HasOne("RescueSystem.Domain.Entities.RescueTeam", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsAsMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("LeadingTeams");
+
+                    b.Navigation("Reports");
+
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
@@ -758,17 +769,6 @@ namespace RescueSystem.Infrastructure.Migrations
             modelBuilder.Entity("RescueSystem.Domain.Entities.RescueTeam", b =>
                 {
                     b.Navigation("Missions");
-                });
-
-            modelBuilder.Entity("RescueSystem.Domain.Entities.User", b =>
-                {
-                    b.Navigation("DispatchedMissions");
-
-                    b.Navigation("LeadingTeams");
-
-                    b.Navigation("Reports");
-
-                    b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
         }

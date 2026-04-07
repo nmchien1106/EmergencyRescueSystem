@@ -17,6 +17,6 @@ namespace RescueSystem.Domain.Entities
 
         // Navigation Properties
         public Mission? Mission { get; set; }
-        public User? CreatedBy { get; set; }
+        public ApplicationUser? CreatedBy { get; set; }
     }
 }

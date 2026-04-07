@@ -24,8 +24,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
     try
     {
@@ -57,7 +57,11 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rescue System API v1");
         c.RoutePrefix = string.Empty; // Serve Swagger UI at root
     });
+
 }
+
+// Register global exception middleware early in the pipeline
+app.UseMiddleware<RescueSystem.Api.Middlewares.GlobalExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -67,7 +71,7 @@ app.MapControllers();
 app.Run();
 
 // Helper methods for seeding
-static async Task SeedRoles(RoleManager<Role> roleManager)
+static async Task SeedRoles(RoleManager<ApplicationRole> roleManager)
 {
     var roles = new[] { "Citizen", "Rescuer", "Dispatcher", "Commander" };
 
@@ -75,7 +79,7 @@ static async Task SeedRoles(RoleManager<Role> roleManager)
     {
         if (!await roleManager.RoleExistsAsync(roleName))
         {
-            await roleManager.CreateAsync(new Role 
+            await roleManager.CreateAsync(new ApplicationRole
             { 
                 Name = roleName,
                 Description = $"{roleName} role"
@@ -84,7 +88,7 @@ static async Task SeedRoles(RoleManager<Role> roleManager)
     }
 }
 
-static async Task SeedAdminUser(UserManager<User> userManager, RoleManager<Role> roleManager)
+static async Task SeedAdminUser(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
 {
     const string adminEmail = "admin@rescuesystem.com";
     const string adminPassword = "Admin@123456";
@@ -93,7 +97,7 @@ static async Task SeedAdminUser(UserManager<User> userManager, RoleManager<Role>
 
     if (adminUser == null)
     {
-        var newAdminUser = new User
+        var newAdminUser = new ApplicationUser
         {
             UserName = "admin",
             Email = adminEmail,

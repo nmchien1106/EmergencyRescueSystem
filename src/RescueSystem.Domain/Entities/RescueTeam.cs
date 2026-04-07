@@ -14,9 +14,9 @@ namespace RescueSystem.Domain.Entities
         public TeamStatus Status { get; set; } = TeamStatus.AVAILABLE;
 
         // Navigation Properties
-        public User? TeamLeader { get; set; }
+        public ApplicationUser? TeamLeader { get; set; }
         public Location? BaseLocation { get; set; }
-        public ICollection<User> Members { get; set; } = new List<User>();
+        public ICollection<ApplicationUser> Members { get; set; } = new List<ApplicationUser>();
         public ICollection<Mission> Missions { get; set; } = new List<Mission>();
     }
 }

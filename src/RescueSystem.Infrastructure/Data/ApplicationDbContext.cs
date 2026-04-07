@@ -6,7 +6,7 @@ using RescueSystem.Domain.Enums;
 
 namespace RescueSystem.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -26,7 +26,7 @@ namespace RescueSystem.Infrastructure.Data
             base.OnModelCreating(builder);
 
             // Configure User entity
-            builder.Entity<User>(entity =>
+            builder.Entity<ApplicationUser>(entity =>
             {
                 entity.ToTable("Users");
                 entity.HasKey(e => e.Id);
@@ -55,7 +55,7 @@ namespace RescueSystem.Infrastructure.Data
             });
 
             // Configure Role entity
-            builder.Entity<Role>(entity =>
+            builder.Entity<ApplicationRole>(entity =>
             {
                 entity.ToTable("Roles");
                 entity.HasKey(e => e.Id);

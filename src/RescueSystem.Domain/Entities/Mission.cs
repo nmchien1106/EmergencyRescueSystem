@@ -19,7 +19,7 @@ namespace RescueSystem.Domain.Entities
 
         // Navigation Properties
         public Request? Request { get; set; }
-        public User? Dispatcher { get; set; }
+        public ApplicationUser? Dispatcher { get; set; }
         public RescueTeam? RescueTeam { get; set; }
         public ICollection<Report> Reports { get; set; } = new List<Report>();
     }

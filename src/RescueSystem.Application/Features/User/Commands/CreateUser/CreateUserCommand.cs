@@ -1,8 +1,13 @@
-namespace RescueSystem.Application.DTOs.User
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using MediatR;
+using RescueSystem.Application.Common.Response;
+
+namespace RescueSystem.Application.Features.User.Commands
 {
-    public class UserDto
+    public class CreateUserCommand: IRequest<Unit>
     {
-        public Guid Id { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
@@ -10,9 +15,7 @@ namespace RescueSystem.Application.DTOs.User
         public string Address { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Avatar { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public string Password { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new();
     }
 }

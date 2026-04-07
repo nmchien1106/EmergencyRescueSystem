@@ -5,6 +5,7 @@
     <File Path="docs/entities.md" />
   </Folder>
   <Folder Name="/setup/">
+    <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">

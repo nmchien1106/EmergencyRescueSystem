@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace RescueSystem.Domain.Entities
 {
-    public class Role : IdentityRole<Guid>
+    public class ApplicationRole : IdentityRole<Guid>
     {
-        public Role() { }
+        public ApplicationRole() { }
 
-        public Role(string name)
+        public ApplicationRole(string name)
         {
             Name = name;
         }

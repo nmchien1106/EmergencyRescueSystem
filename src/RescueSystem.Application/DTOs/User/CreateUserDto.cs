@@ -1,6 +1,10 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace RescueSystem.Application.DTOs.User
 {
-    public class CreateUserDto
+    public class CreateUserDTO
     {
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
