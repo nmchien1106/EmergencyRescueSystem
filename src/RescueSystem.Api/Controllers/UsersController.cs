@@ -4,6 +4,8 @@ using RescueSystem.Application.Common.Response;
 using RescueSystem.Domain.Entities;
 using MediatR;
 using RescueSystem.Application.Features.User.Commands;
+using RescueSystem.Application.Features.User.Queries.GetAllUser;
+using RescueSystem.Application.Features.User.Queries.GetUserById;
 
 namespace RescueSystem.Api.Controllers
 {
@@ -17,6 +19,20 @@ namespace RescueSystem.Api.Controllers
         {
             var res = await mediator.Send(dto);
             return StatusCode(201, ApiResponse<object>.SuccessResponse(null, "Create user successfully", StatusCodes.Status201Created));
+        }
+        [HttpGet]
+        public async Task<ActionResult<object>> GetAllUsers()
+        {
+            var res = await mediator.Send(new GetAllUserQuery());
+
+            return Ok(ApiResponse<object>.SuccessResponse(res, "Get all users successfully", StatusCodes.Status200OK));
+        }
+        // get user by id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDTO>> GetProductById([FromRoute] GetUserByIdQuery query)
+        {
+            var result = await mediator.Send(query);
+            return Ok(result);
         }
     }
 }

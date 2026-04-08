@@ -23,7 +23,6 @@ namespace RescueSystem.Infrastructure
                     connectionString,
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
             });
-
             // Add Identity services
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -36,7 +35,6 @@ namespace RescueSystem.Infrastructure
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            //
             services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
