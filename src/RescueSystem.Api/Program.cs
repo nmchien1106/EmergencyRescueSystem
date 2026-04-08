@@ -12,7 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Add Swagger services
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => 
+c.EnableAnnotations());
 
 builder.Services
     .AddApplicationServices();
