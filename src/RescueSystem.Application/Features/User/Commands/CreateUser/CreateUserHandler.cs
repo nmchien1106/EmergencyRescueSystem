@@ -27,7 +27,7 @@ namespace RescueSystem.Application.Features.User.Commands
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-            await userRepository.CreateUser(user);
+            await userRepository.CreateUserAsync(user, req.Password);
             return Unit.Value;
         }
     }

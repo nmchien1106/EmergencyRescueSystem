@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Data;
 using RescueSystem.Application.Interfaces.Respositories;
-using RescueSystem.Infrastructure.Persistence.Responsitories;
+using RescueSystem.Infrastructure.Persistence.Repositories;
 
 namespace RescueSystem.Infrastructure
 {
