@@ -29,10 +29,10 @@ namespace RescueSystem.Api.Controllers
         }
         // get user by id
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetProductById([FromRoute] GetUserByIdQuery query)
+        public async Task<ActionResult<UserDTO>> GetUserById([FromRoute] Guid id)
         {
-            var result = await mediator.Send(query);
-            return Ok(result);
+            var result = await mediator.Send(new GetUserByIdQuery { Id = id });
+            return Ok(ApiResponse<UserDTO>.SuccessResponse(result, "Get user by id successfully", StatusCodes.Status200OK));
         }
     }
 }
