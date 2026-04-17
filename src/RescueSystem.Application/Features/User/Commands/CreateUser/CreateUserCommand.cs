@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediatR;
+using RescueSystem.Application.Common.Response;
+using RescueSystem.Application.DTOs.User;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using MediatR;
-using RescueSystem.Application.Common.Response;
 
 namespace RescueSystem.Application.Features.User.Commands
 {

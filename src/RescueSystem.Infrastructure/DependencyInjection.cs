@@ -6,6 +6,7 @@ using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Data;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Infrastructure.Persistence.Repositories;
+using RescueSystem.Application.Common.Interfaces.Repositories;
 
 namespace RescueSystem.Infrastructure
 {
@@ -36,6 +37,7 @@ namespace RescueSystem.Infrastructure
             .AddDefaultTokenProviders();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             return services;
         }

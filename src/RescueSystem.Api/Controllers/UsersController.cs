@@ -7,6 +7,9 @@ using RescueSystem.Application.Features.User.Commands;
 using RescueSystem.Application.Features.User.Queries.GetAllUser;
 using RescueSystem.Application.Features.User.Queries.GetUserById;
 using Swashbuckle.AspNetCore.Annotations;
+using RescueSystem.Application.Features.User.Commands.UpdateUser;
+using RescueSystem.Application.Features.User.Commands.DeleteUser;
+
 
 namespace RescueSystem.Api.Controllers
 {
@@ -59,5 +62,68 @@ namespace RescueSystem.Api.Controllers
         }
         // ----------------------- //
 
+        //// Update user
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        //{
+        //    command.Id = id;
+
+        //    await mediator.Send(command);
+
+        //    return NoContent();
+        //}
+        // Update user
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        {
+            command.Id = id;
+
+            // Mediator sẽ trả về true nếu thành công, false nếu không tìm thấy user
+            var result = await mediator.Send(command);
+
+            if (result)
+            {
+                return Ok(new
+                {
+                    status = 200,
+                    success = true,
+                    message = "Cập nhật thông tin người dùng thành công."
+                });
+            }
+
+            return NotFound(new
+            {
+                status = 404,
+                success = false,
+                message = $"Không tìm thấy người dùng có ID: {id}"
+            });
+        }
+
+        // delete user
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var command = new DeleteUserCommand { Id = id };
+            var result = await mediator.Send(command);
+
+            if (result) // Nếu xóa thành công
+            {
+                return Ok(new
+                {
+                    status = 200,
+                    success = true,
+                    message = "Đã xóa người dùng thành công."
+                });
+            }
+
+            // Nếu không tìm thấy hoặc lỗi
+            return NotFound(new
+            {
+                status = 404,
+                success = false,
+                message = "Không tìm thấy người dùng để xóa."
+            });
+
+        }
     }
 }

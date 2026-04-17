@@ -1,9 +1,11 @@
+using Autofac.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using RescueSystem.Application;
+using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure;
 using RescueSystem.Infrastructure.Data;
-using RescueSystem.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

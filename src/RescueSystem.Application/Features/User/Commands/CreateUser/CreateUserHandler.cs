@@ -13,6 +13,10 @@ namespace RescueSystem.Application.Features.User.Commands
         
         public async Task<Unit> Handle(CreateUserCommand req, CancellationToken cancellationToken)
         {
+            if (req.Roles == null || !req.Roles.Any())
+            {
+                req.Roles = new List<string> { "Citizen" };
+            }
             var user = new ApplicationUser
             {
                 Id = Guid.NewGuid(),
@@ -27,7 +31,12 @@ namespace RescueSystem.Application.Features.User.Commands
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-            await userRepository.CreateUserAsync(user, req.Password);
+            var result = await userRepository.CreateUserAsync(user, req.Password, req.Roles);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
             return Unit.Value;
         }
     }

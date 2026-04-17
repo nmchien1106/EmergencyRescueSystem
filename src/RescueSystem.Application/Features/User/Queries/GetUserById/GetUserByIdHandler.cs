@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
+﻿using MediatR;
 using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.DTOs.User;
 using RescueSystem.Application.Interfaces.Respositories;
@@ -16,16 +13,13 @@ namespace RescueSystem.Application.Features.User.Queries.GetUserById
     {
       
 
-        private readonly ILogger<GetUserByIdHandler> _logger;
-        private readonly IMapper _mapper;
-
         public async Task<UserDTO> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
             var user = await userRepository.GetUserProfileByIdAsync(request.Id);
 
             if (user == null)
             {
-                _logger.LogWarning("User with id {UserId} not found", request.Id);
+                // log warning if needed (logger not injected here)
                 throw new NotFoundException("Do not exit");
 
             }

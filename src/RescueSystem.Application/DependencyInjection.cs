@@ -21,6 +21,9 @@ namespace RescueSystem.Application
 
             // Register Pipeline Behaviors
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            // AutoMapper not required here; register in composition root if needed
+
             return services;
         }
     }

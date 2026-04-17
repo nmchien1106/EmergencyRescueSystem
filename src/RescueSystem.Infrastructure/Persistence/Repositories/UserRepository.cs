@@ -23,6 +23,16 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         {
             return await _userManager.CreateAsync(user, password);
         }
+        // Create User with password and roles
+        public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password, IList<string> roles)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded && roles != null)
+            {
+                await _userManager.AddToRolesAsync(user, roles);
+            }
+            return result;
+        }
         // Create User without password
         public async Task<IdentityResult> CreateUserAsync(ApplicationUser user)
         {
@@ -55,10 +65,37 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         }
 
         // Update user
-        public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
+        public async Task UpdateUserAsync(ApplicationUser user)
         {
-            return await _userManager.UpdateAsync(user);
+            // 1. Lấy "thằng gốc" đang có đầy đủ SecurityStamp từ DB lên
+            var existingUser = await _userManager.FindByIdAsync(user.Id.ToString());
+
+            if (existingUser == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            // 2. Cập nhật các thông tin thay đổi vào "thằng gốc"
+            existingUser.FullName = user.FullName;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.Address = user.Address;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            existingUser.Avatar = user.Avatar;
+
+            // 3. Lưu "thằng gốc" đã được cập nhật
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Failed to update user");
+            }
         }
+
+        //public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
+        //{
+        //    return await _userManager.UpdateAsync(user);
+        //}
+
+
         // Delete user
         public async Task<IdentityResult> DeleteUserAsync(ApplicationUser user)
         {
