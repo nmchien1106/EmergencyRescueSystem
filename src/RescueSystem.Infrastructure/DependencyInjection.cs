@@ -7,6 +7,8 @@ using RescueSystem.Infrastructure.Data;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Infrastructure.Persistence.Repositories;
 using RescueSystem.Application.Common.Interfaces.Repositories;
+using RescueSystem.Application.Common.Interfaces.Services;
+using RescueSystem.Infrastructure.Persistence.Services;
 
 namespace RescueSystem.Infrastructure
 {
@@ -15,7 +17,7 @@ namespace RescueSystem.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Add DbContext
-            var connectionString = configuration.GetConnectionString("DefaultConnection") 
+            var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -38,6 +40,7 @@ namespace RescueSystem.Infrastructure
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

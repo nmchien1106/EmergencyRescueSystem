@@ -14,7 +14,7 @@ namespace RescueSystem.Domain.Entities
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
-        public ICollection<Request> Requests { get; set; } = new List<Request>();
+        public ICollection<RescueRequest> Requests { get; set; } = new List<RescueRequest>();
         public ICollection<RescueTeam> LeadingTeams { get; set; } = new List<RescueTeam>();
         public ICollection<RescueTeam> TeamsAsMember { get; set; } = new List<RescueTeam>();
         public ICollection<Mission> DispatchedMissions { get; set; } = new List<Mission>();

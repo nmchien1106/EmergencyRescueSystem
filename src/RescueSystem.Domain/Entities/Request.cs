@@ -3,7 +3,7 @@ using RescueSystem.Domain.Enums;
 
 namespace RescueSystem.Domain.Entities
 {
-    public class Request : BaseEntities
+    public class RescueRequest : BaseEntities
     {
         public Guid UserId { get; set; }
 

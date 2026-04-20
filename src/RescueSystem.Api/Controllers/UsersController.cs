@@ -17,7 +17,7 @@ namespace RescueSystem.Api.Controllers
     [Route("api/[controller]")]
     public class UsersController(IMediator mediator) : ControllerBase
     {
-        // ----------------------- //
+        // POST api/users - Create a new user
         [HttpPost]
         [SwaggerOperation(
             Summary = "Create a new user",
@@ -31,7 +31,7 @@ namespace RescueSystem.Api.Controllers
             return StatusCode(201, ApiResponse<object>.SuccessResponse(null, "Create user successfully", StatusCodes.Status201Created));
         }
 
-        // ----------------------- //
+        // GET api/users - Get all users
         [HttpGet]
         [SwaggerOperation(
             Summary = "Get all users",
@@ -46,7 +46,7 @@ namespace RescueSystem.Api.Controllers
             return Ok(ApiResponse<object>.SuccessResponse(res, "Get all users successfully", StatusCodes.Status200OK));
         }
 
-        // ----------------------- //
+        // GET api/users/{id} - Get user by id
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Get user by id",
@@ -60,19 +60,9 @@ namespace RescueSystem.Api.Controllers
             var result = await mediator.Send(new GetUserByIdQuery { Id = id });
             return Ok(ApiResponse<UserDTO>.SuccessResponse(result, "Get user by id successfully", StatusCodes.Status200OK));
         }
-        // ----------------------- //
 
-        //// Update user
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
-        //{
-        //    command.Id = id;
 
-        //    await mediator.Send(command);
-
-        //    return NoContent();
-        //}
-        // Update user
+        // PUT api/users/{id} - Update user by id
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
         {
@@ -99,14 +89,14 @@ namespace RescueSystem.Api.Controllers
             });
         }
 
-        // delete user
+        // DELETE api/users/{id} - Delete user by id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var command = new DeleteUserCommand { Id = id };
             var result = await mediator.Send(command);
 
-            if (result) // Nếu xóa thành công
+            if (result) 
             {
                 return Ok(new
                 {

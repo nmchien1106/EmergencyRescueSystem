@@ -18,7 +18,7 @@ namespace RescueSystem.Domain.Entities
         public MissionStatus Status { get; set; } = MissionStatus.ASSIGNED;
 
         // Navigation Properties
-        public Request? Request { get; set; }
+        public RescueRequest? Request { get; set; }
         public ApplicationUser? Dispatcher { get; set; }
         public RescueTeam? RescueTeam { get; set; }
         public ICollection<Report> Reports { get; set; } = new List<Report>();

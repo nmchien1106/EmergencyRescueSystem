@@ -16,7 +16,7 @@ namespace RescueSystem.Infrastructure.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Request> Requests { get; set; }
+        public DbSet<RescueRequest> Requests { get; set; }
         public DbSet<RescueTeam> RescueTeams { get; set; }
         public DbSet<Mission> Missions { get; set; }
         public DbSet<Report> Reports { get; set; }
@@ -154,7 +154,7 @@ namespace RescueSystem.Infrastructure.Data
             });
 
             // Configure Request entity
-            builder.Entity<Request>(entity =>
+            builder.Entity<RescueRequest>(entity =>
             {
                 entity.ToTable("Requests");
                 entity.HasKey(e => e.Id);

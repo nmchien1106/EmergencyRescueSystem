@@ -1,11 +1,10 @@
-using Autofac.Core;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using RescueSystem.Api.Seeders;
 using RescueSystem.Application;
-using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure;
-using RescueSystem.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,38 +13,65 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Add Swagger services
-builder.Services.AddSwaggerGen(c => 
+builder.Services.AddSwaggerGen(c =>
 c.EnableAnnotations());
+
+builder.Services.AddProblemDetails();
 
 builder.Services
     .AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"]!;
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
+});
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
-// Apply migrations and create database
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.ContentType = "application/json";
+
+        var exception = context.Features
+            .Get<IExceptionHandlerFeature>()?.Error;
+
+        var response = new
+        {
+            success = false,
+            message = exception?.Message ?? "Internal Server Error",
+            statusCode = 500
+        };
+
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsJsonAsync(response);
+    });
+});
+
+// Apply migrations and seed data
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-
-    try
-    {
-        // Apply pending migrations
-        dbContext.Database.Migrate();
-
-        // Seed roles
-        await SeedRoles(roleManager);
-
-        // Seed default admin user
-        await SeedAdminUser(userManager, roleManager);
-    }
-    catch (Exception ex)
-    {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
-    }
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    await ApplicationSeeder.SeedAsync(scope.ServiceProvider, logger);
 }
 
 // Configure the HTTP request pipeline.
@@ -72,48 +98,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-// Helper methods for seeding
-static async Task SeedRoles(RoleManager<ApplicationRole> roleManager)
-{
-    var roles = new[] { "Citizen", "Rescuer", "Dispatcher", "Commander" };
-
-    foreach (var roleName in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(roleName))
-        {
-            await roleManager.CreateAsync(new ApplicationRole
-            { 
-                Name = roleName,
-                Description = $"{roleName} role"
-            });
-        }
-    }
-}
-
-static async Task SeedAdminUser(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
-{
-    const string adminEmail = "admin@rescuesystem.com";
-    const string adminPassword = "Admin@123456";
-
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-    if (adminUser == null)
-    {
-        var newAdminUser = new ApplicationUser
-        {
-            UserName = "admin",
-            Email = adminEmail,
-            FullName = "System Administrator",
-            IsActive = true,
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(newAdminUser, adminPassword);
-
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(newAdminUser, "Commander");
-        }
-    }
-}

@@ -67,7 +67,6 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         // Update user
         public async Task UpdateUserAsync(ApplicationUser user)
         {
-            // 1. Lấy "thằng gốc" đang có đầy đủ SecurityStamp từ DB lên
             var existingUser = await _userManager.FindByIdAsync(user.Id.ToString());
 
             if (existingUser == null)
@@ -75,25 +74,18 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
                 throw new Exception("User not found");
             }
 
-            // 2. Cập nhật các thông tin thay đổi vào "thằng gốc"
             existingUser.FullName = user.FullName;
             existingUser.PhoneNumber = user.PhoneNumber;
             existingUser.Address = user.Address;
             existingUser.DateOfBirth = user.DateOfBirth;
             existingUser.Avatar = user.Avatar;
 
-            // 3. Lưu "thằng gốc" đã được cập nhật
             var result = await _userManager.UpdateAsync(existingUser);
             if (!result.Succeeded)
             {
                 throw new Exception("Failed to update user");
             }
         }
-
-        //public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
-        //{
-        //    return await _userManager.UpdateAsync(user);
-        //}
 
 
         // Delete user
@@ -119,9 +111,9 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             return await _userManager.IsEmailConfirmedAsync(user);
         }
         // get user roles
-        public async Task<IList<string>> GetUserRolesAsync(ApplicationUser user)
+        public async Task<List<string>> GetUserRolesAsync(ApplicationUser user)
         {
-            return await _userManager.GetRolesAsync(user);
+            return (await _userManager.GetRolesAsync(user)).ToList();
         }
     }
 }
