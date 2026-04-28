@@ -9,13 +9,16 @@ using Microsoft.AspNetCore.Authorization;
 using RescueSystem.Application.Features.Missions.Commands.UpdateMission;
 using RescueSystem.Application.Features.Missions.Commands.FinishMission;
 using RescueSystem.Application.Features.Missions.Queries.GetMissionsWithPagination;
+using RescueSystem.Domain.Entities;
+using RescueSystem.Application.Common.Exception;
 
 namespace RescueSystem.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/missions")]
     public class MissionController(IMediator mediator) : ControllerBase
     {
+        // POST api/missions
         [HttpPost]
         [SwaggerOperation(
         Summary = "Create a new rescue mission",
@@ -26,19 +29,19 @@ namespace RescueSystem.Api.Controllers
         [SwaggerResponse(500, "Internal server error")]
         public async Task<ActionResult<object>> CreateMission([FromBody] CreateMissionCommand command)
         {
-            // 1. Gửi command đi xử lý
+
             var res = await mediator.Send(command);
 
-            // 2. Trả về format ApiResponse chuẩn của dự án
             return StatusCode(201,
                 ApiResponse<object>.SuccessResponse(
-                    new { Id = res }, // Trả về ID của Mission mới tạo
-                    "Create mission successfully",
-                    StatusCodes.Status201Created
+                    data: new { Id = res },
+                    message: "Create mission successfully",
+                    statusCode: StatusCodes.Status201Created
                 )
             );
         }
 
+        // GET api/missions/{id}
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Get mission details by ID",
@@ -52,28 +55,30 @@ namespace RescueSystem.Api.Controllers
             var res = await mediator.Send(new GetMissionByIdQuery { Id = id });
             return Ok(
                 ApiResponse<MissionDTO>.SuccessResponse(
-                    res,
-                    "Get mission details successfully",
-                    StatusCodes.Status200OK
+                    data: res,
+                    message: "Get mission details successfully",
+                    statusCode: StatusCodes.Status200OK
                 )
             );
         }
 
+        // GET api/missions
         [HttpGet]
+        [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
             Summary = "Get missions with pagination",
             Description = "Lấy danh sách nhiệm vụ có phân trang và lọc"
         )]
-                [SwaggerResponse(200, "Get missions successfully")]
+        [SwaggerResponse(200, "Get missions successfully")]
         public async Task<ActionResult<object>> GetMissions([FromQuery] GetMissionsWithPaginationQuery query)
         {
             var res = await mediator.Send(query);
 
             return Ok(
                 ApiResponse<object>.SuccessResponse(
-                    res,
-                    "Get missions successfully",
-                    StatusCodes.Status200OK
+                    data: res,
+                    message: "Get missions successfully",
+                    statusCode: StatusCodes.Status200OK
                 )
             );
         }
@@ -84,21 +89,21 @@ namespace RescueSystem.Api.Controllers
             Summary = "Update mission status",
             Description = "Cập nhật trạng thái nhiệm vụ"
         )]
-        public async Task<ActionResult<object>> UpdateMissionStatus(Guid id, [FromBody] UpdateMissionCommand command)
+        public async Task<ActionResult<object>> UpdateMissionStatus(Guid id, UpdateMissionCommand command)
         {
             command.MissionId = id;
             var res = await mediator.Send(command);
 
             if (!res)
             {
-                return BadRequest("Không thể cập nhật trạng thái");
+                throw new BadRequestException("Không thể cập nhật trạng thái nhiệm vụ");
             }
 
             return Ok(
                 ApiResponse<object>.SuccessResponse(
-                    null,
-                    "Update mission successfully",
-                    StatusCodes.Status200OK
+                    data: null,
+                    message: "Update mission successfully",
+                    statusCode: StatusCodes.Status200OK
                 )
             );
         }
@@ -120,14 +125,14 @@ namespace RescueSystem.Api.Controllers
 
             if (!res)
             {
-                return BadRequest("Không thể hoàn thành nhiệm vụ");
+                throw new BadRequestException("Không thể hoàn thành nhiệm vụ");
             }
 
             return Ok(
                 ApiResponse<object>.SuccessResponse(
-                    null,
-                    "Finish mission successfully",
-                    StatusCodes.Status200OK
+                    data: null,
+                    message: "Finish mission successfully",
+                    statusCode: StatusCodes.Status200OK
                 )
             );
         }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Mission;
+using RescueSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,7 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
         public async Task<MissionDTO> Handle(GetMissionByIdQuery request, CancellationToken cancellationToken)
         {
             var mission = await missionRepository.GetByIdAsync(request.Id);
-            if(mission == null)
+            if (mission == null)
             {
                 throw new Exception("Mission not found");
             }
@@ -28,7 +29,6 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
                 Status = mission.Status.ToString(),
                 TeamName = mission.RescueTeam?.TeamName // tui lấy thêm tên đội luôn
             };
-
         }
     }
 }

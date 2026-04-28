@@ -40,7 +40,50 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
+
+    // Override OnChallenge để xử lý 401 Unauthorized
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = async context =>
+        {
+            context.HandleResponse();
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            var response = new
+            {
+                success = false,
+                statusCode = 401,
+                message = "Yêu cầu không được xác thực. Vui lòng cung cấp token JWT hợp lệ",
+                data = (object?)null
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        },
+
+        OnForbidden = async context =>
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+            var response = new
+            {
+                success = false,
+                statusCode = 403,
+                message = "Bạn không có quyền truy cập tài nguyên này",
+                data = (object?)null
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    };
 });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 builder.Services.AddAuthorization();
 var app = builder.Build();

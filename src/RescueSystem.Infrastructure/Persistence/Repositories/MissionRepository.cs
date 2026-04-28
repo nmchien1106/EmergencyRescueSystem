@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Domain.Enums;
@@ -20,6 +21,12 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
         public async Task<Guid> AddAsync(Mission mission)
         {
+            var req = await _context.Requests.FindAsync(mission.RequestId);
+            if (req == null) throw new NotFoundException("Request not found");
+            var dispatcher = await _context.Users.FindAsync(mission.DispatcherId);
+            if (dispatcher == null) throw new NotFoundException("Dispatcher not found");
+            var rescueTeam = await _context.RescueTeams.FindAsync(mission.RescueTeamId);
+            if (rescueTeam == null) throw new NotFoundException("Rescue team not found");
             await _context.Missions.AddAsync(mission);
             await _context.SaveChangesAsync();
 

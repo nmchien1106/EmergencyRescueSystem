@@ -18,6 +18,8 @@ namespace RescueSystem.Application.Features.Missions.Commands.CreateMission
         }
         public async Task<Guid> Handle(CreateMissionCommand request, CancellationToken cancellationToken)
         {
+
+
             var mission = new Mission
             {
                 Id = Guid.NewGuid(),
@@ -30,7 +32,8 @@ namespace RescueSystem.Application.Features.Missions.Commands.CreateMission
                 UpdatedAt = DateTime.UtcNow,
             };
 
-            await _missionRepository.AddAsync(mission);
+            var res = await _missionRepository.AddAsync(mission);
+
             return mission.Id;
         }
     }

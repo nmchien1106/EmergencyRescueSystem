@@ -15,7 +15,6 @@ namespace RescueSystem.Application.DTOs.User
         public string Address { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Avatar { get; set; } = string.Empty;
-        public List<string > Roles { get; set; } = new();
-
+        public List<string> Roles { get; set; } = new();
     }
 }
