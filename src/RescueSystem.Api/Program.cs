@@ -18,8 +18,7 @@ c.EnableAnnotations());
 
 builder.Services.AddProblemDetails();
 
-builder.Services
-    .AddApplicationServices();
+builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

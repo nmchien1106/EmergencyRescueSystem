@@ -12,15 +12,15 @@ using RescueSystem.Infrastructure.Data;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260408125016_init2")]
-    partial class init2
+    [Migration("20260427153843_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -497,7 +497,7 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.ToTable("Reports", (string)null);
                 });
 
-            modelBuilder.Entity("RescueSystem.Domain.Entities.Request", b =>
+            modelBuilder.Entity("RescueSystem.Domain.Entities.RescueRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -669,7 +669,7 @@ namespace RescueSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RescueSystem.Domain.Entities.Request", "Request")
+                    b.HasOne("RescueSystem.Domain.Entities.RescueRequest", "Request")
                         .WithMany("Missions")
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -707,7 +707,7 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Mission");
                 });
 
-            modelBuilder.Entity("RescueSystem.Domain.Entities.Request", b =>
+            modelBuilder.Entity("RescueSystem.Domain.Entities.RescueRequest", b =>
                 {
                     b.HasOne("RescueSystem.Domain.Entities.Location", "Location")
                         .WithMany()
@@ -761,7 +761,7 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("RescueSystem.Domain.Entities.Request", b =>
+            modelBuilder.Entity("RescueSystem.Domain.Entities.RescueRequest", b =>
                 {
                     b.Navigation("Missions");
                 });

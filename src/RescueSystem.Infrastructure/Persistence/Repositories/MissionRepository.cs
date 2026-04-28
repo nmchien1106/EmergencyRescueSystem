@@ -1,0 +1,78 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RescueSystem.Application.Common.Interfaces.Repositories;
+using RescueSystem.Domain.Entities;
+using RescueSystem.Domain.Enums;
+using RescueSystem.Infrastructure.Data;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace RescueSystem.Infrastructure.Persistence.Repositories
+{
+    public class MissionRepository : IMissionRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public MissionRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Guid> AddAsync(Mission mission)
+        {
+            await _context.Missions.AddAsync(mission);
+            await _context.SaveChangesAsync();
+
+            return mission.Id;
+        }
+
+        public async Task UpdateAsync(Mission mission)
+        {
+            _context.Missions.Update(mission);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var mission = await _context.Missions.FindAsync(id);
+            if (mission == null) return;
+
+            _context.Missions.Remove(mission);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Mission?> GetByIdAsync(Guid id)
+        {
+            return await _context.Missions
+                .Include(x => x.Request)
+                .Include(x => x.Dispatcher)
+                .Include(x => x.RescueTeam)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<Mission>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _context.Missions
+                .OrderByDescending(x => x.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Mission>> GetByStatusAsync(MissionStatus status)
+        {
+            return await _context.Missions
+                    .Where(x => x.Status == status)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .ToListAsync();
+        }
+
+        public IQueryable<Mission> Query()
+        {
+            return _context.Missions
+                .Include(x => x.RescueTeam)
+                .Include(x => x.Dispatcher)
+                .AsQueryable();
+        }
+    }
+}

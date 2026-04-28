@@ -41,6 +41,7 @@ namespace RescueSystem.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IMissionRepository, MissionRepository>();
 
             return services;
         }

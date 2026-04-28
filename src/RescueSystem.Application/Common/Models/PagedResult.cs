@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace RescueSystem.Application.Common.Models
+{
+    public class PagedResult<T>
+    {
+        public List<T> Items { get; set; } = new List<T>(); // dữ liệu trang hiện tại
+        public int TotalCount { get; set; } // tổng records
+    }
+}
