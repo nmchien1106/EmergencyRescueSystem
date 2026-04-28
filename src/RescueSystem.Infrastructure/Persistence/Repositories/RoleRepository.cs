@@ -39,12 +39,10 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception(errors); // 🔥 show lỗi thật
+                throw new Exception(errors);
             }
 
             return true;
-            //var result = await _roleManager.CreateAsync(role);
-            //return result.Succeeded;
         }
 
         public async Task<bool> UpdateAsync(ApplicationRole role)

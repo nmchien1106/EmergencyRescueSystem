@@ -6,7 +6,7 @@ namespace RescueSystem.Domain.Entities
 {
     public class RescueRequest : BaseEntities
     {
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         public EmergencyType EmergencyType { get; set; }
 
@@ -18,13 +18,10 @@ namespace RescueSystem.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
-        public string MediaUrl { get; set; } = string.Empty;
-
-        public DateTime SubmittedTime { get; set; } = DateTime.UtcNow;
-
         // Navigation Properties
         public ApplicationUser? RequestedBy { get; set; }
         public Location? Location { get; set; }
         public ICollection<Mission> Missions { get; set; } = new List<Mission>();
+        public ICollection<RequestMedia> Medias { get; set; } = new List<RequestMedia>();
     }
 }

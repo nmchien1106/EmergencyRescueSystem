@@ -172,7 +172,7 @@ namespace RescueSystem.Infrastructure.Data
                     .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.UserId)
-                    .IsRequired();
+                    .IsRequired(false);
 
                 entity.Property(e => e.EmergencyType)
                     .IsRequired();
@@ -212,6 +212,30 @@ namespace RescueSystem.Infrastructure.Data
                 entity.HasOne(e => e.Location)
                     .WithMany()
                     .HasForeignKey(e => e.LocationId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            // Configure RequestMedia entity
+            builder.Entity<RequestMedia>(entity =>
+            {
+                entity.ToTable("RequestMedia");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.RequestId)
+                    .IsRequired();
+                entity.Property(e => e.Sescue_url)
+                    .HasMaxLength(500)
+                    .IsRequired();
+                entity.Property(e => e.Public_id)
+                    .HasMaxLength(256)
+                    .IsRequired();
+                entity.Property(e => e.resource_type)
+                    .IsRequired()
+                    .HasDefaultValue(MediaType.Image);
+
+                // Foreign Key: Request -> RequestMedia
+                entity.HasOne(e => e.Request)
+                    .WithMany(r => r.Medias)
+                    .HasForeignKey(e => e.RequestId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
