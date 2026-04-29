@@ -81,5 +81,19 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
                 .Include(x => x.Dispatcher)
                 .AsQueryable();
         }
+
+        public async Task<Mission?> GetByRequestAndTeamAsync(Guid requestId, Guid rescueTeamId)
+        {
+            return await _context.Missions
+                .FirstOrDefaultAsync(x => x.RequestId == requestId && x.RescueTeamId == rescueTeamId);
+        }
+
+        public async Task<Mission?> GetActiveMissionByTeamIdAsync(Guid rescueTeamId)
+        {
+            return await _context.Missions
+                .FirstOrDefaultAsync(x => x.RescueTeamId == rescueTeamId
+                    && x.Status != MissionStatus.COMPLETED
+                    && x.Status != MissionStatus.ABORTED);
+        }
     }
 }

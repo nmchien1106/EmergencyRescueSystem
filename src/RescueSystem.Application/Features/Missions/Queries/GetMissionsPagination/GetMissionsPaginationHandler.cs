@@ -7,17 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsWithPagination
+namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsPagination
 {
-    public class GetMissionsWithPaginationHandler : IRequestHandler<GetMissionsWithPaginationQuery, PagedResult<MissionDTO>>
+    public class GetMissionsPaginationHandler : IRequestHandler<GetMissionsPaginationQuery, PagedResult<MissionDTO>>
     {
         private readonly IMissionRepository _missionRepository;
-        public GetMissionsWithPaginationHandler(IMissionRepository missionRepository)
+        public GetMissionsPaginationHandler(IMissionRepository missionRepository)
         {
             _missionRepository = missionRepository;
         }
 
-        public async Task<PagedResult<MissionDTO>> Handle(GetMissionsWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<MissionDTO>> Handle(GetMissionsPaginationQuery request, CancellationToken cancellationToken)
         {
 
             // Gọi repository để lấy dữ liệu với phân trang và lọc
@@ -39,28 +39,33 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsWithPagi
             var pageSize = request.PageSize <= 0 ? 10 : request.PageSize;
             // tong so banr ghi
             var totalCount = await query.CountAsync(cancellationToken);
-
             // phan trang
             var data = await query
                 .OrderByDescending(x => x.StartTime)
-                .Skip((request.Page - 1) * request.PageSize)
-                .Take(request.PageSize)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(m => new MissionDTO
                 {
                     Id = m.Id,
                     RequestId = m.RequestId,
+                    Description = m.Request != null ? m.Request.Description : null,
                     DispatcherId = m.DispatcherId,
+                    DispatcherName = m.Dispatcher != null ? m.Dispatcher.FullName : null,
                     RescueTeamId = m.RescueTeamId,
-                    StartTime = m.StartTime,
-                    EndTime = m.EndTime,
-                    Status = m.Status.ToString(),
-                    TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null
+                    TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null,
+                    StartTime = m.StartTime.AddHours(7),
+                    EndTime = m.EndTime.HasValue ? m.EndTime.Value.AddHours(7) : null,
+                    CreateAt = m.CreatedAt.AddHours(7),
+                    UpdateAt = m.UpdatedAt.AddHours(7),
+                    Status = m.Status.ToString()
                 })
                 .ToListAsync(cancellationToken);
             return new PagedResult<MissionDTO>
             {
                 Items = data,
-                TotalCount = totalCount
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
             };
         }
     }

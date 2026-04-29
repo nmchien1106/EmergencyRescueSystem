@@ -24,10 +24,17 @@ namespace RescueSystem.Application.Features.Missions.Commands.UpdateMission
                 throw new Exception("Không tìm thấy nhiệm vụ!");
             } // neu ko tim thay
             
-            if (mission.Status == MissionStatus.COMPLETED)
+            // k update trang thái kết thúc
+            if (mission.Status == MissionStatus.COMPLETED
+                || mission.Status == MissionStatus.ABORTED)
             {
-                return false; // khoong cho update nhieem vu da hoan thanh
+                return false;
             }
+
+            // k cho yêu cầu chuyển trạng thái này
+            if (request.Status == MissionStatus.COMPLETED
+                || request.Status == MissionStatus.ABORTED)
+                return false;
 
             // chuyen trang thai
             bool isValidTransition = false;
@@ -44,27 +51,14 @@ namespace RescueSystem.Application.Features.Missions.Commands.UpdateMission
                 && request.Status == MissionStatus.IN_PROGRESS)
                 isValidTransition = true;
 
-            else if (mission.Status == MissionStatus.IN_PROGRESS
-                && request.Status == MissionStatus.COMPLETED)
-                isValidTransition = true;
-
-            else if (mission.Status == MissionStatus.ABORTED)
-                isValidTransition = true;
-
             if (!isValidTransition)
                 return false; // chuyen trang thai khong hop le
 
             // cap nhat cais trang thai
             mission.Status = request.Status;
 
-            // cap nhat thoi gian 
-            if (request.Status == MissionStatus.COMPLETED
-                || request.Status == MissionStatus.ABORTED)
-            {
-                mission.EndTime = DateTime.UtcNow;
-            }
             // thoi gian update
-            mission.UpdatedAt = DateTime.UtcNow;
+            mission.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
             await _missionRepository.UpdateAsync(mission);
             return true;

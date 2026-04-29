@@ -19,13 +19,15 @@ namespace RescueSystem.Application.Features.Missions.Commands.FinishMission
             {
                 throw new Exception("Không tìm thấy nhiệm vụ!");
             }
-            if (mission.Status == MissionStatus.COMPLETED)
-            {
-                return false;
-            }
 
+            if (mission.Status != MissionStatus.IN_PROGRESS)
+            {
+                throw new Exception("Chỉ có thể hoàn thành khi nhiệm vụ đang IN_PROGRESS");
+            }
+         
             mission.Status = MissionStatus.COMPLETED;
             mission.EndTime = DateTime.UtcNow;
+            mission.UpdatedAt = DateTime.UtcNow;
 
             await _missionRepository.UpdateAsync(mission);
             return true;

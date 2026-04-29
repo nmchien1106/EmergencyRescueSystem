@@ -8,9 +8,11 @@ using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using RescueSystem.Application.Features.Missions.Commands.UpdateMission;
 using RescueSystem.Application.Features.Missions.Commands.FinishMission;
-using RescueSystem.Application.Features.Missions.Queries.GetMissionsWithPagination;
+using RescueSystem.Application.Features.Missions.Queries.GetMissionsPagination;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Application.Common.Exception;
+using RescueSystem.Application.Features.Missions.Commands.AbortMission;
+using Microsoft.Identity.Client;
 
 namespace RescueSystem.Api.Controllers
 {
@@ -54,7 +56,7 @@ namespace RescueSystem.Api.Controllers
         {
             var res = await mediator.Send(new GetMissionByIdQuery { Id = id });
             return Ok(
-                ApiResponse<MissionDTO>.SuccessResponse(
+                ApiResponse<MissionDetailDTO>.SuccessResponse(
                     data: res,
                     message: "Get mission details successfully",
                     statusCode: StatusCodes.Status200OK
@@ -70,7 +72,7 @@ namespace RescueSystem.Api.Controllers
             Description = "Lấy danh sách nhiệm vụ có phân trang và lọc"
         )]
         [SwaggerResponse(200, "Get missions successfully")]
-        public async Task<ActionResult<object>> GetMissions([FromQuery] GetMissionsWithPaginationQuery query)
+        public async Task<ActionResult<object>> GetMissions([FromQuery] GetMissionsPaginationQuery query)
         {
             var res = await mediator.Send(query);
 
@@ -83,6 +85,7 @@ namespace RescueSystem.Api.Controllers
             );
         }
 
+        // PUT api/missions/{id}/status
         [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/status")]
         [SwaggerOperation(
@@ -108,6 +111,7 @@ namespace RescueSystem.Api.Controllers
             );
         }
 
+        // PUT api/missions/{id}/finish
         [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/finish")]
         [SwaggerOperation(
@@ -132,6 +136,36 @@ namespace RescueSystem.Api.Controllers
                 ApiResponse<object>.SuccessResponse(
                     data: null,
                     message: "Finish mission successfully",
+                    statusCode: StatusCodes.Status200OK
+                )
+            );
+        }
+
+        // PUT api/missions/{id}/abort
+        [Authorize(Roles = "Rescuer,Dispatcher")]
+        [HttpPut("{id}/abort")]
+        [SwaggerOperation(
+            Summary = "Abort mission",
+            Description = "Hủy bỏ nhiệm vụ"
+        )]
+        public async Task<ActionResult<object>> AbortMission(Guid id)
+        {
+            var command = new AbortMissionCommand
+            {
+                MissionId = id
+            };
+
+            var res = await mediator.Send(command);
+
+            if (!res)
+            {
+                throw new BadRequestException("Không thể hủy bỏ nhiệm vụ");
+            }
+
+            return Ok(
+                ApiResponse<object>.SuccessResponse(
+                    data: null,
+                    message: "Abort mission successfully",
                     statusCode: StatusCodes.Status200OK
                 )
             );

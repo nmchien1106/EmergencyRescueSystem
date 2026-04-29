@@ -7,7 +7,7 @@ using RescueSystem.Domain.Entities;
 
 namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
 {
-    public class GetMissionByIdQuery : IRequest<MissionDTO>
+    public class GetMissionByIdQuery : IRequest<MissionDetailDTO>
     {
         public Guid Id { get; set; }
     }

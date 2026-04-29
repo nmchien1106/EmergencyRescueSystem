@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsWithPagination
+namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsPagination
 {
     
-    public class GetMissionsWithPaginationQuery : IRequest<PagedResult<MissionDTO>>
+    public class GetMissionsPaginationQuery : IRequest<PagedResult<MissionDTO>>
     {
         public int Page { get; set; } = 1; // trang hiện tại với mặc định là 1
         public int PageSize { get; set; } = 10; // số records trên mỗi trang với mặc định là 10

@@ -16,5 +16,7 @@ namespace RescueSystem.Application.Common.Interfaces.Repositories
         Task DeleteAsync(Guid id);
 
         IQueryable<Mission> Query();
+        Task<Mission?> GetByRequestAndTeamAsync(Guid requestId, Guid rescueTeamId);
+        Task<Mission?> GetActiveMissionByTeamIdAsync(Guid rescueTeamId);
     }
 }
