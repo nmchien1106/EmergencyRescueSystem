@@ -190,12 +190,6 @@ namespace RescueSystem.Infrastructure.Data
                 entity.Property(e => e.Description)
                     .HasMaxLength(2000);
 
-                entity.Property(e => e.MediaUrl)
-                    .HasMaxLength(500);
-
-                entity.Property(e => e.SubmittedTime)
-                    .HasDefaultValueSql("GETUTCDATE()");
-
                 entity.Property(e => e.CreatedAt)
                     .HasDefaultValueSql("GETUTCDATE()");
 
@@ -222,13 +216,13 @@ namespace RescueSystem.Infrastructure.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.RequestId)
                     .IsRequired();
-                entity.Property(e => e.Sescue_url)
+                entity.Property(e => e.SecureUrl)
                     .HasMaxLength(500)
                     .IsRequired();
-                entity.Property(e => e.Public_id)
+                entity.Property(e => e.PublicId)
                     .HasMaxLength(256)
                     .IsRequired();
-                entity.Property(e => e.resource_type)
+                entity.Property(e => e.ResourceType)
                     .IsRequired()
                     .HasDefaultValue(MediaType.Image);
 

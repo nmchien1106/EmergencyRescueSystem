@@ -1,8 +1,9 @@
-﻿using Autofac.Core;
+﻿using System.Reflection;
+using System.Reflection.Metadata;
+using Autofac.Core;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 using RescueSystem.Application.Common.Behaviors;
 
 
@@ -22,6 +23,8 @@ namespace RescueSystem.Application
             // Register Pipeline Behaviors
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
+            // Register automapper
+            services.AddAutoMapper(_ => { }, assembly);
             return services;
         }
     }

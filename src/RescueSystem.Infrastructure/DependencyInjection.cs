@@ -9,6 +9,7 @@ using RescueSystem.Infrastructure.Persistence.Repositories;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.Common.Interfaces.Services;
 using RescueSystem.Infrastructure.Persistence.Services;
+using RescueSystem.Application.Common.ExternalSettings;
 
 namespace RescueSystem.Infrastructure
 {
@@ -38,11 +39,18 @@ namespace RescueSystem.Infrastructure
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            // Add repositories 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IRequestRespository, RequestRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<IMissionRepository, MissionRepository>();
 
+            // Add Cloudinary service
+            services.Configure<CloudinarySetting>(
+                configuration.GetSection("Cloudinary"));
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
             return services;
         }
     }

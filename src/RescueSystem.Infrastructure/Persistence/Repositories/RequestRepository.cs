@@ -18,13 +18,18 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        // Lấy 
         public Task<List<RescueRequest>> GetAllAsync()
         {
             return _context.Requests.ToListAsync();
         }
         public Task<RescueRequest?> GetByIdAsync(Guid id)
         {
-            return _context.Requests.FirstOrDefaultAsync(r => r.Id == id);
+            return _context.Requests
+                        .Include(r => r.Medias)
+                        .Include(r => r.RequestedBy)
+                        .Include(r => r.Location)
+                        .FirstOrDefaultAsync(r => r.Id == id);
         }
         public Task<List<RescueRequest>> GetByUserIdAsync(Guid userId)
         {

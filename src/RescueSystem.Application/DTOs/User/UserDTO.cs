@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace RescueSystem.Application.DTOs.User
 {
-    // Server trả thông tin user về cho client
     public class UserDTO
     {
         public Guid Id { get; set; }
@@ -16,5 +16,6 @@ namespace RescueSystem.Application.DTOs.User
         public DateTime DateOfBirth { get; set; }
         public string Avatar { get; set; } = string.Empty;
         public List<string> Roles { get; set; } = new();
+
     }
 }
