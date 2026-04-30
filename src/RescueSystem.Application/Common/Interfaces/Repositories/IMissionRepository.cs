@@ -1,0 +1,22 @@
+﻿using RescueSystem.Domain.Entities;
+using RescueSystem.Domain.Enums;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace RescueSystem.Application.Common.Interfaces.Repositories
+{
+    public interface IMissionRepository
+    {
+        Task<Mission?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Mission>> GetPagedAsync(int page, int pageSize);
+        Task<IEnumerable<Mission>> GetByStatusAsync(MissionStatus status);
+        Task<Guid> AddAsync(Mission mission);
+        Task UpdateAsync(Mission mission);
+        Task DeleteAsync(Guid id);
+
+        IQueryable<Mission> Query();
+        Task<Mission?> GetByRequestAndTeamAsync(Guid requestId, Guid rescueTeamId);
+        Task<Mission?> GetActiveMissionByTeamIdAsync(Guid rescueTeamId);
+    }
+}

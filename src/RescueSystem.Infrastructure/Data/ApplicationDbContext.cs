@@ -83,6 +83,9 @@ namespace RescueSystem.Infrastructure.Data
                 entity.ToTable("Locations");
                 entity.HasKey(e => e.Id);
 
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Latitude)
                     .IsRequired();
 
@@ -107,6 +110,9 @@ namespace RescueSystem.Infrastructure.Data
             {
                 entity.ToTable("Addresses");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.Street)
                     .HasMaxLength(255);
@@ -133,6 +139,9 @@ namespace RescueSystem.Infrastructure.Data
                 entity.ToTable("Contacts");
                 entity.HasKey(e => e.Id);
 
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(256)
                     .IsRequired();
@@ -158,6 +167,9 @@ namespace RescueSystem.Infrastructure.Data
             {
                 entity.ToTable("Requests");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.UserId)
                     .IsRequired();
@@ -209,6 +221,9 @@ namespace RescueSystem.Infrastructure.Data
                 entity.ToTable("RescueTeams");
                 entity.HasKey(e => e.Id);
 
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
+
                 entity.Property(e => e.TeamName)
                     .HasMaxLength(256)
                     .IsRequired();
@@ -252,6 +267,9 @@ namespace RescueSystem.Infrastructure.Data
             {
                 entity.ToTable("Missions");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.RequestId)
                     .IsRequired();
@@ -301,6 +319,9 @@ namespace RescueSystem.Infrastructure.Data
             {
                 entity.ToTable("Reports");
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(e => e.MissionId)
                     .IsRequired();

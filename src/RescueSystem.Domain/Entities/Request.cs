@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using RescueSystem.Domain.Entities.Base;
 using RescueSystem.Domain.Enums;
 

@@ -5,7 +5,7 @@
 namespace RescueSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class init2 : Migration
+    public partial class mission : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
