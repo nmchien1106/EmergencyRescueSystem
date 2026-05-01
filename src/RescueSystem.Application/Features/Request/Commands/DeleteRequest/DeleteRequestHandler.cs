@@ -1,0 +1,29 @@
+using MediatR;
+using RescueSystem.Application.Common.Exception;
+using RescueSystem.Application.Common.Interfaces.Repositories;
+using RescueSystem.Domain.Entities;
+
+namespace RescueSystem.Application.Features.Request.Commands.DeleteRequest
+{
+    public class DeleteRequestHandler : IRequestHandler<DeleteRequestCommand, bool>
+    {
+        private readonly IRequestRespository _requestRepository;
+
+        public DeleteRequestHandler(IRequestRespository requestRepository)
+        {
+            _requestRepository = requestRepository;
+        }
+
+        public async Task<bool> Handle(DeleteRequestCommand request, CancellationToken cancellationToken)
+        {
+            var requestEntity = await _requestRepository.GetByIdAsync(request.RequestId);
+            if (requestEntity == null)
+            {
+                throw new NotFoundException("Không tìm thấy yêu cầu cứu hộ");
+            }
+
+            await _requestRepository.DeleteAsync(requestEntity);
+            return true;
+        }
+    }
+}

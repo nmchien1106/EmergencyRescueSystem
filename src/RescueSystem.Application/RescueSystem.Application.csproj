@@ -24,9 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Request\Commands\DeleteRequest\" />
     <Folder Include="Features\Request\Commands\UpdateStatusRequest\" />
-    <Folder Include="Features\Request\Commands\UpdateRequest\" />
     <Folder Include="Features\Request\Queries\GetRequests\" />
     <Folder Include="Features\Request\Queries\GetRequestByUserId\" />
   </ItemGroup>

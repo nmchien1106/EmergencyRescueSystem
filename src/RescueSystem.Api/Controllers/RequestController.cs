@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using RescueSystem.Application.Common.Response;
 using RescueSystem.Application.DTOs.Request;
 using RescueSystem.Application.Features.Request.Commands.CreateRequest;
+using RescueSystem.Application.Features.Request.Commands.DeleteRequest;
+using RescueSystem.Application.Features.Request.Commands.UpdateRequest;
+using RescueSystem.Application.Features.Request.Queries.GetAllRequests;
 using RescueSystem.Application.Features.Request.Queries.GetRequestById;
 
 namespace RescueSystem.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/requests")]
     [ApiController]
     public class RequestController : ControllerBase
     {
@@ -18,7 +21,7 @@ namespace RescueSystem.Api.Controllers
             this.mediator = mediator;
         }
 
-        // POST api/request - Create a new rescue request
+        // POST api/requests - Create a new rescue request
         [HttpPost]
         public async Task<IActionResult> CreateRequest([FromForm] CreateRequestCommand command)
         {
@@ -33,7 +36,19 @@ namespace RescueSystem.Api.Controllers
             ));
         }
 
-        // GET api/request/{id} - Get a rescue request by ID
+        // GET api/requests - Get rescue requests with pagination & filtering
+        [HttpGet]
+        public async Task<IActionResult> GetRequests([FromQuery] GetAllRequestsQuery query)
+        {
+            var result = await mediator.Send(query);
+            return Ok(ApiResponse<object>.SuccessResponse(
+                data: result,
+                message: "Lấy danh sách yêu cầu cứu hộ thành công",
+                statusCode: 200
+            ));
+        }
+
+        // GET api/requests/{id} - Get a rescue request by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRequestById(Guid id)
         {
@@ -42,6 +57,37 @@ namespace RescueSystem.Api.Controllers
             return Ok(ApiResponse<RequestDTO>.SuccessResponse(
                 data: result,
                 message: "Lấy yêu cầu cứu hộ thành công",
+                statusCode: 200
+            ));
+        }
+
+        // PUT api/requests/{id} - Update a rescue request
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRequest(Guid id, [FromForm] UpdateRequestCommand command)
+        {
+            command.RequestId = id;
+            var result = await mediator.Send(command);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                data: new
+                {
+                    Id = result.Id
+                },
+                message: "Cập nhật yêu cầu cứu hộ thành công",
+                statusCode: 200
+            ));
+        }
+
+        // DELETE api/requests/{id} - Delete a rescue request
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRequest(Guid id)
+        {
+            var command = new DeleteRequestCommand { RequestId = id };
+            var result = await mediator.Send(command);
+
+            return Ok(ApiResponse<object>.SuccessResponse(
+                data: new { Deleted = result },
+                message: "Xóa yêu cầu cứu hộ thành công",
                 statusCode: 200
             ));
         }
