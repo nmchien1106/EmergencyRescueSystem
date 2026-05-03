@@ -273,9 +273,7 @@ namespace RescueSystem.Api.Seeders
                     Priority = Priority.CRITICAL,
                     Status = RequestStatus.PENDING,
                     LocationId = locations[0].Id,
-                    Description = "Cháy lớn tại khu phố cổ, cần sơ tán khẩn cấp",
-                    MediaUrl = "",
-                    SubmittedTime = DateTime.UtcNow.AddHours(-2)
+                    Description = "Cháy lớn tại khu phố cổ, cần sơ tán khẩn cấp"
                 },
                 new RescueRequest
                 {
@@ -284,9 +282,7 @@ namespace RescueSystem.Api.Seeders
                     Priority = Priority.HIGH,
                     Status = RequestStatus.ACCEPTED,
                     LocationId = locations[1].Id,
-                    Description = "Bệnh nhân gặp chấn thương nặng, cần cấp cứu ngay",
-                    MediaUrl = "",
-                    SubmittedTime = DateTime.UtcNow.AddHours(-1)
+                    Description = "Bệnh nhân gặp chấn thương nặng, cần cấp cứu ngay"
                 },
                 new RescueRequest
                 {
@@ -295,9 +291,7 @@ namespace RescueSystem.Api.Seeders
                     Priority = Priority.HIGH,
                     Status = RequestStatus.IN_PROGRESS,
                     LocationId = locations[2].Id,
-                    Description = "Nước lũ dâng cao, cần sơ tán dân cư",
-                    MediaUrl = "",
-                    SubmittedTime = DateTime.UtcNow.AddHours(-3)
+                    Description = "Nước lũ dâng cao, cần sơ tán dân cư"
                 },
                 new RescueRequest
                 {
@@ -306,9 +300,7 @@ namespace RescueSystem.Api.Seeders
                     Priority = Priority.MEDIUM,
                     Status = RequestStatus.PENDING,
                     LocationId = locations[3].Id,
-                    Description = "Tai nạn giao thông trên đường Tây Sơn",
-                    MediaUrl = "",
-                    SubmittedTime = DateTime.UtcNow.AddMinutes(-30)
+                    Description = "Tai nạn giao thông trên đường Tây Sơn"
                 },
                 new RescueRequest
                 {
@@ -317,9 +309,7 @@ namespace RescueSystem.Api.Seeders
                     Priority = Priority.CRITICAL,
                     Status = RequestStatus.COMPLETED,
                     LocationId = locations[4].Id,
-                    Description = "Sập một phần tòa nhà cũ, có người bị kẹt",
-                    MediaUrl = "",
-                    SubmittedTime = DateTime.UtcNow.AddDays(-1)
+                    Description = "Sập một phần tòa nhà cũ, có người bị kẹt"
                 }
             };
 

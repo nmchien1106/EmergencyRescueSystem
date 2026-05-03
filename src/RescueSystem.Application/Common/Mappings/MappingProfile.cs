@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using AutoMapper;
+using RescueSystem.Application.DTOs.Location;
 using RescueSystem.Application.DTOs.Request;
 using RescueSystem.Application.DTOs.User;
 using RescueSystem.Domain.Entities;
@@ -17,6 +18,7 @@ public class MappingProfile : Profile
         CreateMap<RequestMedia, RequestMediaDTO>();
         CreateMap<RescueRequest, RequestDTO>();
         CreateMap<RescueRequest, NonRelationRequestDTO>();
+        CreateMap<Location, LocationDTO>();
 
     }
 }

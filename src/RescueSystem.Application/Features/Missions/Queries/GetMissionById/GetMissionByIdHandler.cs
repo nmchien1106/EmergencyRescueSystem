@@ -29,8 +29,8 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
                 {
                     Id = mission.Request.Id,
                     Description = mission.Request.Description,
-                    EmergencyType = mission.Request.EmergencyType.ToString(),
-                    Priority = mission.Request.Priority.ToString()
+                    EmergencyType = mission.Request.EmergencyType,
+                    Priority = mission.Request.Priority
                 },
 
                 RescueTeam = mission.RescueTeam == null ? null : new RescueTeamDTO

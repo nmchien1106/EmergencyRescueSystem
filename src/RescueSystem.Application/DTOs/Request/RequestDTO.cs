@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using RescueSystem.Application.DTOs.Base;
+using RescueSystem.Application.DTOs.Location;
 using RescueSystem.Application.DTOs.User;
-using RescueSystem.Domain.Entities;
+using LocationEntity = RescueSystem.Domain.Entities.Location;
 using RescueSystem.Domain.Enums;
 
 namespace RescueSystem.Application.DTOs.Request
@@ -19,7 +20,7 @@ namespace RescueSystem.Application.DTOs.Request
 
         public RequestStatus Status { get; set; } = RequestStatus.PENDING;
 
-        public Location? Location { get; set; }
+        public LocationEntity? Location { get; set; }
 
         public string Description { get; set; } = string.Empty;
         public List<RequestMediaDTO> Medias { get; set; } = new List<RequestMediaDTO>();
@@ -31,7 +32,7 @@ namespace RescueSystem.Application.DTOs.Request
         public Priority Priority { get; set; }
 
         public RequestStatus Status { get; set; } = RequestStatus.PENDING;
-        public Location? Location { get; set; }
+        public LocationEntity? Location { get; set; }
 
     }
 }
