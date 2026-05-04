@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Autofac.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RescueSystem.Domain.Entities;
-using RescueSystem.Infrastructure.Data;
-using RescueSystem.Application.Interfaces.Respositories;
-using RescueSystem.Infrastructure.Persistence.Repositories;
+using RescueSystem.Application.Common.ExternalSettings;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.Common.Interfaces.Services;
+using RescueSystem.Application.Interfaces.Respositories;
+using RescueSystem.Domain.Entities;
+using RescueSystem.Infrastructure.Data;
+using RescueSystem.Infrastructure.Persistence.Repositories;
 using RescueSystem.Infrastructure.Persistence.Services;
-using RescueSystem.Application.Common.ExternalSettings;
 
 namespace RescueSystem.Infrastructure
 {
@@ -46,7 +47,12 @@ namespace RescueSystem.Infrastructure
             services.AddScoped<IRequestRespository, RequestRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<IMissionRepository, MissionRepository>();
+            
+            // Add Email service
+            services.AddScoped<IEmailService, EmailService>();
 
+            // Add Otp service
+            services.AddScoped<IOtpService, OtpService>();
             // Add Cloudinary service
             services.Configure<CloudinarySetting>(
                 configuration.GetSection("Cloudinary"));

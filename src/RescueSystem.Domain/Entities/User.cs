@@ -9,9 +9,12 @@ namespace RescueSystem.Domain.Entities
         public string Address { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Avatar { get; set; } = string.Empty;
+        public string AvatarPublicId { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+
 
         // Navigation Properties
         public ICollection<RescueRequest> Requests { get; set; } = new List<RescueRequest>();

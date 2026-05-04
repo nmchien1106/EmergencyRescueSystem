@@ -115,5 +115,15 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         {
             return (await _userManager.GetRolesAsync(user)).ToList();
         }
+
+        // update password for user
+        public async Task UpdatePasswordAsync(ApplicationUser user, string newPassword)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+            if (!result.Succeeded)
+                throw new Exception("Reset password failed");
+        }
     }
 }

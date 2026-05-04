@@ -32,5 +32,8 @@ namespace RescueSystem.Application.Interfaces.Respositories
 
         // Role Methods
         Task<List<string>> GetUserRolesAsync(ApplicationUser user);
+
+        // Update password for user
+        Task UpdatePasswordAsync(ApplicationUser user, string newPassword);
     }
 }

@@ -85,5 +85,6 @@ namespace RescueSystem.Infrastructure.Persistence.Services
                 ResourceType = resourceType
             };
         }
+
     }
 }

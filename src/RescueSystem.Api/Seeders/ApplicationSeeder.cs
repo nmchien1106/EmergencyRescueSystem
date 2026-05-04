@@ -129,7 +129,12 @@ namespace RescueSystem.Api.Seeders
             }
 
             // Seed Citizen Users
-            var citizenEmails = new[] { "citizen1@rescuesystem.com", "citizen2@rescuesystem.com", "citizen3@rescuesystem.com" };
+            var citizenEmails = new[]
+            {
+                "vongoccu1+1@gmail.com",
+                "vongoccu1+2@gmail.com",
+                "vongoccu1+3@gmail.com"
+            };
             foreach (var email in citizenEmails)
             {
                 var citizenUser = await userManager.FindByEmailAsync(email);
