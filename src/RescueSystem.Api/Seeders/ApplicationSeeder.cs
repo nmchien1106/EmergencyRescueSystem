@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Domain.Enums;
-using RescueSystem.Infrastructure.Data;
+using RescueSystem.Infrastructure.Persistence;
 
 namespace RescueSystem.Api.Seeders
 {

@@ -7,7 +7,6 @@ using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Common;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Domain.Enums;
-using RescueSystem.Infrastructure.Data;
 
 namespace RescueSystem.Infrastructure.Persistence.Repositories
 {

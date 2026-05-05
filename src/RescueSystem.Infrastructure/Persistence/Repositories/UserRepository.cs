@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Domain.Entities;
-using RescueSystem.Infrastructure.Data;
+using RescueSystem.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Text;
