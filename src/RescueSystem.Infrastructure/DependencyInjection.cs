@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RescueSystem.Domain.Entities;
-using RescueSystem.Infrastructure.Data;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Infrastructure.Persistence.Repositories;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.Common.Interfaces.Services;
 using RescueSystem.Infrastructure.Persistence.Services;
 using RescueSystem.Application.Common.ExternalSettings;
+using RescueSystem.Infrastructure.Persistence;
 
 namespace RescueSystem.Infrastructure
 {
