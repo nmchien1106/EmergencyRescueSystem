@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet.Actions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RescueSystem.Application.Common.Exception;
@@ -14,6 +15,11 @@ using RescueSystem.Application.Features.Auth.Commands.ResetPassword;
 using RescueSystem.Application.Features.Auth.Commands.UpdateAvatar;
 using RescueSystem.Application.Features.Auth.Commands.UpdateProfile;
 using RescueSystem.Application.Features.Auth.Queries.Profile;
+using RescueSystem.Application.Features.Contact.Commands.CreateContact;
+using RescueSystem.Application.Features.Contact.Commands.DeleteContact;
+using RescueSystem.Application.Features.Contact.Commands.UpdateContact;
+using RescueSystem.Application.Features.Contact.Queries.GetAllContact;
+using RescueSystem.Application.Features.Contact.Queries.GetContactById;
 using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -136,6 +142,132 @@ namespace RescueSystem.Api.Controllers
                 success = true,
                 statusCode = 200,
                 message = "Upload avatar success",
+                data = result
+            });
+        }
+
+        // Post api/auth/contact/{id}
+        [Authorize]
+        [HttpPost("contact")]
+        public async Task<IActionResult> Create([FromBody] CreateContactCommand command)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("UserId không hợp lệ");
+            }
+
+            command.UserId = userId;
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new
+            {
+                success = true,
+                statusCode = 200,
+                message = "Tao contact thanh cong",
+                data = result
+            });
+        }
+
+        // Put api/auth/contact/{id}
+        [Authorize]
+        [HttpPut("contact/{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateContactCommand command)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            command.Id = id;
+            command.UserId = userId;
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new
+            {
+                success = true,
+                statusCode = 200,
+                message = "Cap nhat thong tin thanh cong",
+                data = result
+            });
+        }
+
+        // Delete api/auth/contact/{id}
+
+        [Authorize]
+        [HttpDelete("contact/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var command = new DeleteContactCommand
+            {
+                Id = id,
+                UserId = userId
+            };
+
+            var result = await _mediator.Send(command);
+
+            return Ok(new
+            {
+                success = result,
+                statusCode = 200,
+                message = "Xoa thanh cong"
+            });
+        }
+
+        // Get api/auth/contact/{id}
+        [Authorize]
+        [HttpGet("contact/{id}")]
+        public async Task<IActionResult> GetContactId(Guid id)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var query = new GetContactDetailQuery
+            {
+                Id = id,
+                UserId = userId
+            };
+
+            var result = await _mediator.Send(query);
+
+            return Ok(new
+            {
+                success = true,
+                statusCode = 200,
+                message = "Lay thong tin thanh cong",
+                data = result
+            });
+        }
+
+        // Get api/auth/contact
+        [Authorize]
+        [HttpGet("contact")]
+        public async Task<IActionResult> GetAllContacts()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var query = new GetAllContactQuery { UserId = userId };
+
+            var result = await _mediator.Send(query);
+
+            return Ok(new
+            {
+                success = true,
+                statusCode = 200,
+                message = "Lay thong tin thanh cong",
                 data = result
             });
         }

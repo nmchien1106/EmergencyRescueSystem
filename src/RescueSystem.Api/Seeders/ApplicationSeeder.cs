@@ -132,7 +132,7 @@ namespace RescueSystem.Api.Seeders
             var citizenEmails = new[]
             {
                 "vongoccu1+1@gmail.com",
-                "vongoccu1+2@gmail.com",
+                "vongoccu1@gmail.com",
                 "vongoccu1+3@gmail.com"
             };
             foreach (var email in citizenEmails)

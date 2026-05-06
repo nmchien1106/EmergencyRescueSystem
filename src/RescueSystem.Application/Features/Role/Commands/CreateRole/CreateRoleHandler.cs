@@ -23,12 +23,7 @@ namespace RescueSystem.Application.Features.Role.Commands.CreateRole
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
-            //var result = await roleRepository.CreateAsync(role);
-            //if (!result)
-            //{
-            //    throw new Exception("Failed to create role");
-            //}
-            //return Unit.Value;
+
             await roleRepository.CreateAsync(role);
 
             return Unit.Value;
