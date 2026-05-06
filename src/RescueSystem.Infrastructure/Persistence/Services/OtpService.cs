@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RescueSystem.Application.Common.Interfaces.Services;
 using RescueSystem.Domain.Entities;
-using RescueSystem.Infrastructure.Data;
+using RescueSystem.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,18 +34,10 @@ namespace RescueSystem.Infrastructure.Persistence.Services
                 IsUsed = false
             };
 
-            //_context.OtpCodes.Add(otpEntity);
-            //await _context.SaveChangesAsync();
-            try
-            {
-                _context.OtpCodes.Add(otpEntity);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException?.Message);
-                throw;
-            }
+            _context.OtpCodes.Add(otpEntity);
+            await _context.SaveChangesAsync();
+
+
         }
 
         public async Task<bool> ValidateOtpAsync(string email, string otp)

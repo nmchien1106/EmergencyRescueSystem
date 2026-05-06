@@ -8,7 +8,7 @@ using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.Common.Interfaces.Services;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Domain.Entities;
-using RescueSystem.Infrastructure.Data;
+using RescueSystem.Infrastructure.Persistence;
 using RescueSystem.Infrastructure.Persistence.Repositories;
 using RescueSystem.Infrastructure.Persistence.Services;
 

@@ -14,6 +14,9 @@ namespace RescueSystem.Infrastructure.Persistence.Configurations
             builder.Property(e => e.Id)
                 .HasDefaultValueSql("NEWID()");
 
+            builder.Property(e => e.UserId)
+                .IsRequired();
+
             builder.Property(e => e.Name)
                 .HasMaxLength(256)
                 .IsRequired();
@@ -32,6 +35,11 @@ namespace RescueSystem.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+
+            builder.HasOne(e => e.User)
+                .WithMany(u => u.Contacts)
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

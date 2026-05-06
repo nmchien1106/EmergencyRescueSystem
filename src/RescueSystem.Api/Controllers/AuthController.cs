@@ -26,11 +26,11 @@ namespace RescueSystem.Api.Controllers
     public class AuthController : ControllerBase
     {
         private IMediator _mediator;
-        private readonly IEmailService _emailService; // test
+        private readonly IEmailService _emailService; 
         public AuthController(IMediator mediator, IEmailService emailService)
         {
             _mediator = mediator;
-            _emailService = emailService;  // test
+            _emailService = emailService;  
         }
 
         // Post api/auth/register

@@ -19,6 +19,7 @@ namespace RescueSystem.Infrastructure.Persistence
         public DbSet<RescueTeam> RescueTeams { get; set; }
         public DbSet<Mission> Missions { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<OtpCode> OtpCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

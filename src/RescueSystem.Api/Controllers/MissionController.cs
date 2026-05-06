@@ -45,6 +45,7 @@ namespace RescueSystem.Api.Controllers
 
         // GET api/missions/{id}
         [HttpGet("{id}")]
+        [Authorize(Roles = "Dispatcher,Rescuer")]
         [SwaggerOperation(
             Summary = "Get mission details by ID",
             Description = "Lấy thông tin chi tiết của 1 nv bằng ID"
@@ -65,6 +66,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // GET api/missions
+
         [HttpGet]
         [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(

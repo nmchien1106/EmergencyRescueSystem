@@ -12,8 +12,8 @@ using RescueSystem.Infrastructure.Persistence;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260503145336_OTPCode")]
-    partial class OTPCode
+    [Migration("20260505164104_user-contact-address")]
+    partial class usercontactaddress
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,7 +180,13 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Addresses", (string)null);
                 });
@@ -246,6 +252,10 @@ namespace RescueSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("AvatarPublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -366,7 +376,12 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Contacts", (string)null);
                 });
@@ -726,6 +741,28 @@ namespace RescueSystem.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RescueSystem.Domain.Entities.Address", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "User")
+                        .WithOne()
+                        .HasForeignKey("RescueSystem.Domain.Entities.Address", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.Contact", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
                 {
                     b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "Dispatcher")
@@ -822,6 +859,8 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("Contacts");
+
                     b.Navigation("DispatchedMissions");
 
                     b.Navigation("LeadingTeams");
