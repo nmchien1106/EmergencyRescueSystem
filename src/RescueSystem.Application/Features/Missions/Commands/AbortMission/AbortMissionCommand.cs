@@ -8,5 +8,7 @@ namespace RescueSystem.Application.Features.Missions.Commands.AbortMission
     public class AbortMissionCommand : IRequest<bool>
     {
         public Guid MissionId { get; set; }
+        public Guid ChangedById { get; set; } // Người thực hiện thay đổi
+        public string Note { get; set; } = string.Empty; // Ghi chú / lý do hủy
     }
 }
