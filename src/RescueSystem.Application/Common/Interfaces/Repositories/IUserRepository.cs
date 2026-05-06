@@ -26,6 +26,8 @@ namespace RescueSystem.Application.Interfaces.Respositories
 
         // Update User Method
         Task UpdateUserAsync(ApplicationUser user);
+        Task<Address?> GetAddressByUserIdAsync(Guid userId);
+        Task UpsertAddressAsync(Address address);
 
         // Delete User Method
         Task<IdentityResult> DeleteUserAsync(ApplicationUser user);

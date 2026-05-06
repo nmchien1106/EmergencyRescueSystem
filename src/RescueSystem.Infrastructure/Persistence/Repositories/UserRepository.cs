@@ -12,10 +12,12 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        public UserRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         // Create User with password
@@ -87,6 +89,30 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             }
         }
 
+
+        public async Task<Address?> GetAddressByUserIdAsync(Guid userId)
+        {
+            return await _context.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
+        }
+
+        public async Task UpsertAddressAsync(Address address)
+        {
+            var existing = await _context.Addresses.FirstOrDefaultAsync(a => a.UserId == address.UserId);
+            if (existing == null)
+            {
+                await _context.Addresses.AddAsync(address);
+            }
+            else
+            {
+                existing.Street = address.Street;
+                existing.City = address.City;
+                existing.District = address.District;
+                existing.GPS = address.GPS;
+                existing.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+        }
 
         // Delete user
         public async Task<IdentityResult> DeleteUserAsync(ApplicationUser user)

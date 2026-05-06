@@ -10,6 +10,6 @@ namespace RescueSystem.Application.Features.Auth.Commands.UpdateProfile
     {
         public string FullName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
-        public string Address { get; set; }
+        public AddressDTO? Address { get; set; }
     }
 }

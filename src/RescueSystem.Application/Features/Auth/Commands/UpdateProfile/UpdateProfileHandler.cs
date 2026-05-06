@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using RescueSystem.Application.Interfaces.Respositories;
+using RescueSystem.Domain.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Security.Claims;
 
 namespace RescueSystem.Application.Features.Auth.Commands.UpdateProfile
 {
@@ -20,10 +20,10 @@ namespace RescueSystem.Application.Features.Auth.Commands.UpdateProfile
 
         public async Task<string> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
-            var userId = _httpContextAccessor.HttpContext.User
-                .FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = _httpContextAccessor.HttpContext?.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (userId == null)
+            if (string.IsNullOrWhiteSpace(userId))
                 throw new Exception("Unauthorized");
 
             var user = await _userRepository.GetUserByIdAsync(userId);
@@ -32,9 +32,24 @@ namespace RescueSystem.Application.Features.Auth.Commands.UpdateProfile
 
             user.FullName = request.FullName;
             user.PhoneNumber = request.PhoneNumber;
-            user.Address = request.Address;
 
             await _userRepository.UpdateUserAsync(user);
+
+            if (request.Address != null)
+            {
+                var address = new Address
+                {
+                    UserId = user.Id,
+                    Street = request.Address.Street,
+                    City = request.Address.City,
+                    District = request.Address.District,
+                    GPS = request.Address.GPS,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                await _userRepository.UpsertAddressAsync(address);
+            }
 
             return "Update profile successfully";
         }
