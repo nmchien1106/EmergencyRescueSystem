@@ -52,7 +52,11 @@ namespace RescueSystem.Application.Features.Missions.Commands.UpdateMission
                 isValidTransition = true;
 
             if (!isValidTransition)
+            {
                 return false; // chuyen trang thai khong hop le
+            }
+
+            var previousStatus = mission.Status;
 
             // cap nhat cais trang thai
             mission.Status = request.Status;
@@ -60,7 +64,19 @@ namespace RescueSystem.Application.Features.Missions.Commands.UpdateMission
             // thoi gian update
             mission.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
+            var history = new MissionHistory
+            {
+                MissionId = mission.Id,
+                FromStatus = previousStatus,
+                ToStatus = mission.Status,
+                ChangedById = request.ChangedById,
+                Note = request.Note,
+                CreatedAt = DateTime.UtcNow.AddHours(7)
+            };
+
             await _missionRepository.UpdateAsync(mission);
+            await _missionRepository.AddHistoryAsync(history);
+
             return true;
         }
     }

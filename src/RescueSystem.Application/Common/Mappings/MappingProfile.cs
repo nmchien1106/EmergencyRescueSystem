@@ -5,6 +5,7 @@ using AutoMapper;
 using RescueSystem.Application.DTOs.Location;
 using RescueSystem.Application.DTOs.Request;
 using RescueSystem.Application.DTOs.User;
+using RescueSystem.Application.DTOs.Mission;
 using RescueSystem.Domain.Entities;
 
 namespace RescueSystem.Application.Common.Mappings;
@@ -20,5 +21,7 @@ public class MappingProfile : Profile
         CreateMap<RescueRequest, NonRelationRequestDTO>();
         CreateMap<Location, LocationDTO>();
 
+        // Mission mappings
+        CreateMap<MissionHistory, MissionHistoryDTO>();
     }
 }

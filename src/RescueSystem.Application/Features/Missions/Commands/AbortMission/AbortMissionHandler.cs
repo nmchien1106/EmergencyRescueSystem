@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
+using RescueSystem.Domain.Entities;
 using RescueSystem.Domain.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RescueSystem.Application.Features.Missions.Commands.AbortMission
 {
@@ -30,11 +31,24 @@ namespace RescueSystem.Application.Features.Missions.Commands.AbortMission
                 return false;
             }
 
+            var previousStatus = mission.Status;
             mission.Status = MissionStatus.ABORTED;
             mission.UpdatedAt = DateTime.UtcNow.AddHours(7);
             mission.EndTime = DateTime.UtcNow.AddHours(7);
 
+            var history = new MissionHistory
+            {
+                MissionId = mission.Id,
+                FromStatus = previousStatus,
+                ToStatus = mission.Status,
+                ChangedById = request.ChangedById,
+                Note = request.Note,
+                CreatedAt = DateTime.UtcNow.AddHours(7)
+            };
+
             await _missionRepository.UpdateAsync(mission);
+            await _missionRepository.AddHistoryAsync(history);
+
             return true;
         }
     }

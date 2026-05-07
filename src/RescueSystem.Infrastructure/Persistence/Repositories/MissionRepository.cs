@@ -47,6 +47,21 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddHistoryAsync(MissionHistory history)
+        {
+            await _context.MissionHistories.AddAsync(history);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<MissionHistory>> GetHistoriesByMissionIdAsync(Guid missionId)
+        {
+            return await _context.MissionHistories
+                .Include(mh => mh.ChangedBy)
+                .Where(mh => mh.MissionId == missionId)
+                .OrderByDescending(mh => mh.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task<Mission?> GetByIdAsync(Guid id)
         {
             return await _context.Missions
