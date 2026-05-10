@@ -23,6 +23,7 @@ namespace RescueSystem.Api.Controllers
     {
         // POST api/missions
         [HttpPost]
+        [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
         Summary = "Create a new rescue mission",
         Description = "Dispatcher phân công một đội cứu hộ cho một yêu cầu cứu hộ cụ thể"

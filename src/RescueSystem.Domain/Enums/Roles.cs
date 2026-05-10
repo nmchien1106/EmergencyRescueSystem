@@ -8,5 +8,6 @@ namespace RescueSystem.Domain.Enums
         Rescuer = 1,
         Dispatcher = 2,
         Commander = 3,
+        RescuerLeader = 4,
     }
 }

@@ -7,6 +7,7 @@ using RescueSystem.Application.DTOs.Request;
 using RescueSystem.Application.DTOs.User;
 using RescueSystem.Application.DTOs.Mission;
 using RescueSystem.Domain.Entities;
+using RescueSystem.Application.DTOs.RescueTeam;
 
 namespace RescueSystem.Application.Common.Mappings;
 
@@ -23,5 +24,7 @@ public class MappingProfile : Profile
 
         // Mission mappings
         CreateMap<MissionHistory, MissionHistoryDTO>();
+
+        CreateMap<RescueTeam, RescueTeamDTO>();
     }
 }
