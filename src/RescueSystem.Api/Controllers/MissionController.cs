@@ -116,7 +116,8 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/finish
-        // [Authorize(Roles = "Rescuer,Dispatcher")]
+        //Note: Nên chuyển thành RescuerLeader
+        [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/finish")]
         [SwaggerOperation(
             Summary = "Finish mission",

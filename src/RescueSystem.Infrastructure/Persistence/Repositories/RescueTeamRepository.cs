@@ -67,11 +67,15 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
                 throw new NotFoundException("User not found");
             }
 
-            if(team.Members.Any(m=>m.Id == memberId)){
+            if (member.RescueTeamId.HasValue)
+            {
+                if (member.RescueTeamId == teamId)
                     throw new BadRequestException("User is already a member of the rescue team");
+                throw new BadRequestException("User already belongs to another rescue team");
             }
 
             team.Members.Add(member);
+            member.RescueTeamId = teamId;
             team.UpdatedAt = DateTime.UtcNow;
             return await _context.SaveChangesAsync() > 0;
         }

@@ -46,8 +46,9 @@ namespace RescueSystem.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(e => e.Members)
-                .WithMany(u => u.TeamsAsMember)
-                .UsingEntity(j => j.ToTable("TeamMembers"));
+                .WithOne(u => u.MemberOfTeam)
+                .HasForeignKey(u => u.RescueTeamId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace RescueSystem.Api.Controllers
     [Route("api/[controller]")]
     public class RescueTeamController(IMediator mediator) : ControllerBase
     {
-        // GET: api/rescue-teams
+        // GET: api/RescueTeam
         [HttpGet]
         //[Authorize(Roles = "Dispatcher,RescuerLeader")]
         [SwaggerOperation(
@@ -37,8 +37,9 @@ namespace RescueSystem.Api.Controllers
             var rescueTeams = await mediator.Send(new GetAllRescueTeamsQuery());
             return Ok(ApiResponse<object>.SuccessResponse(rescueTeams, "Get all rescue teams successfully", StatusCodes.Status200OK));
         }
-        // GET: api/rescue-teams/{id}
+        // GET: api/RescueTeam/{id}
         [HttpGet("{teamId}")]
+        [Authorize(Roles = "Dispatcher,RescuerLeader,Rescuer")]
         [SwaggerOperation(
             Summary = "Get rescue team by id",
             Description = "Lấy một đội cứu hộ theo Id"
@@ -50,7 +51,7 @@ namespace RescueSystem.Api.Controllers
             var team = await mediator.Send(new GetRescueTeamByIdQuery { Id = teamId });
             return Ok(ApiResponse<RescueTeamDTO>.SuccessResponse(team, "Get rescue team successfully", StatusCodes.Status200OK));
         }
-        // POST: api/rescue-teams
+        // POST: api/RescueTeam
         [HttpPost]
         [SwaggerOperation(
             Summary = "Create a Rescue Team",
@@ -64,7 +65,7 @@ namespace RescueSystem.Api.Controllers
 
             return StatusCode(StatusCodes.Status201Created, ApiResponse<object>.SuccessResponse(null, "Rescue team created successfully", StatusCodes.Status201Created));
         }
-        // PUT: api/rescue-teams/{id}
+        // PUT: api/RescueTeam/{id}
         [HttpPut("{teamId}/status/{newStatus}")]
         [SwaggerOperation(
             Summary = "Update rescue team status",
@@ -85,7 +86,7 @@ namespace RescueSystem.Api.Controllers
 
             return Ok(ApiResponse<object>.SuccessResponse(null, "Cập nhật trạng thái thành công", StatusCodes.Status200OK));
         }
-        // DELETE: api/rescue-teams/{id}
+        // DELETE: api/RescueTeam/{id}
         //Note: Thực tế thì dùng delete để xóa cứng là kh ổn, nên dùng soft delete(cập nhật 1 trường deleted thành true) tránh ảnh hưởng đến mấy cái foreign key
         [HttpDelete("{teamId}")]
         [SwaggerOperation(
@@ -103,7 +104,6 @@ namespace RescueSystem.Api.Controllers
         }
 
         // GET : api/rescue-teams/{teamId}/members
-
         [HttpGet("{teamId}/members")]
         [SwaggerOperation(
             Summary = "Get members of a rescue team",
@@ -139,8 +139,8 @@ namespace RescueSystem.Api.Controllers
 
             return Ok(ApiResponse<object>.SuccessResponse(null, "Thêm thành viên thành công", StatusCodes.Status200OK));
         }
-
-        // DELETE : api/rescue-teams/{teamId}/members/{memberId}
+        
+        // DELETE : api/RescueTeam/{teamId}/member/{memberId}
         [HttpDelete("{teamId}/member/{memberId}")]
         [SwaggerOperation(
             Summary = "Remove member from rescue team",
@@ -161,7 +161,7 @@ namespace RescueSystem.Api.Controllers
 
             return Ok(ApiResponse<object>.SuccessResponse(null, "Xóa thành viên thành công", StatusCodes.Status200OK));
         }
-        // GET : api/rescue-teams/{teamId}/missions
+        // GET : api/RescueTeam/{teamId}/missions
         //TODO :CHECK
         [HttpGet("{teamId}/missions")]
         [SwaggerOperation(
@@ -181,7 +181,7 @@ namespace RescueSystem.Api.Controllers
                 )
             );
         }
-        // POST : api/rescue-teams/{teamId}/missions
-        // DELETE : api/rescue-teams/{teamId}/missions/{missionId}
+        // POST : api/RescueTeam/{teamId}/missions
+        // DELETE : api/RescueTeam/{teamId}/missions/{missionId}
     }
 }

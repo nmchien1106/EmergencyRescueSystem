@@ -8,6 +8,8 @@ namespace RescueSystem.Api.Seeders
 {
     public static class ApplicationSeeder
     {
+        private const int BatchSize = 10;
+
         public static async Task SeedAsync(IServiceProvider serviceProvider, ILogger logger)
         {
             var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
@@ -18,10 +20,13 @@ namespace RescueSystem.Api.Seeders
             {
                 await dbContext.Database.MigrateAsync();
                 await SeedRoles(roleManager);
-                await SeedUsers(userManager, dbContext);
+                await SeedUsers(userManager);
                 await SeedLocations(dbContext);
                 await SeedRescueTeams(dbContext, userManager);
                 await SeedRequests(dbContext, userManager);
+                await SeedMissions(dbContext, userManager);
+                await SeedMissionHistories(dbContext, userManager);
+                await SeedReports(dbContext);
             }
             catch (Exception ex)
             {
@@ -31,7 +36,14 @@ namespace RescueSystem.Api.Seeders
 
         private static async Task SeedRoles(RoleManager<ApplicationRole> roleManager)
         {
-            var roles = new[] { "Citizen", "Rescuer", "Dispatcher", "Commander" };
+            var roles = new[]
+            {
+                "Citizen",
+                "Rescuer",
+                "RescuerLeader",
+                "Dispatcher",
+                "Commander"
+            };
 
             foreach (var roleName in roles)
             {
@@ -46,121 +58,108 @@ namespace RescueSystem.Api.Seeders
             }
         }
 
-        private static async Task SeedUsers(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        private static async Task SeedUsers(UserManager<ApplicationUser> userManager)
         {
-            // Seed Admin User
             const string adminEmail = "admin@rescuesystem.com";
             const string adminPassword = "Admin@123456";
 
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-            if (adminUser == null)
+            if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var newAdminUser = new ApplicationUser
+                var admin = new ApplicationUser
                 {
                     UserName = "admin",
                     Email = adminEmail,
                     FullName = "System Administrator",
-                    PhoneNumber = "0123456789",
+                    PhoneNumber = "0100000000",
                     Address = "Hà Nội, Việt Nam",
                     DateOfBirth = new DateTime(1990, 1, 1),
                     IsActive = true,
                     EmailConfirmed = true
                 };
 
-                var result = await userManager.CreateAsync(newAdminUser, adminPassword);
+                var result = await userManager.CreateAsync(admin, adminPassword);
                 if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(newAdminUser, "Commander");
-                }
+                    await userManager.AddToRoleAsync(admin, "Commander");
             }
 
-            // Seed Rescuer Users
-            var rescuerEmails = new[] { "rescuer1@rescuesystem.com", "rescuer2@rescuesystem.com", "rescuer3@rescuesystem.com" };
-            foreach (var email in rescuerEmails)
+            for (var i = 1; i <= BatchSize; i++)
             {
-                var rescuerUser = await userManager.FindByEmailAsync(email);
-                if (rescuerUser == null)
-                {
-                    var newRescuerUser = new ApplicationUser
-                    {
-                        UserName = email.Split('@')[0],
-                        Email = email,
-                        FullName = $"Rescuer {email.Split('@')[0]}",
-                        PhoneNumber = $"010000000{Array.IndexOf(rescuerEmails, email) + 1}",
-                        Address = "Hà Nội, Việt Nam",
-                        DateOfBirth = new DateTime(1995, 5, 15),
-                        IsActive = true,
-                        EmailConfirmed = true
-                    };
+                var suffix = i.ToString("D2");
+                await EnsureUserInRoleAsync(userManager,
+                    email: $"citizen{suffix}@rescuesystem.com",
+                    userName: $"citizen{suffix}",
+                    fullName: $"Citizen Seed {suffix}",
+                    phone: $"090100{suffix}",
+                    password: "Citizen@123",
+                    role: "Citizen",
+                    birthDayOffset: i);
 
-                    var result = await userManager.CreateAsync(newRescuerUser, "Rescuer@123");
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(newRescuerUser, "Rescuer");
-                    }
-                }
+                await EnsureUserInRoleAsync(userManager,
+                    email: $"rescuer{suffix}@rescuesystem.com",
+                    userName: $"rescuer{suffix}",
+                    fullName: $"Rescuer Seed {suffix}",
+                    phone: $"090200{suffix}",
+                    password: "Rescuer@123",
+                    role: "Rescuer",
+                    birthDayOffset: i + 20);
+
+                await EnsureUserInRoleAsync(userManager,
+                    email: $"rleader{suffix}@rescuesystem.com",
+                    userName: $"rleader{suffix}",
+                    fullName: $"Rescuer Leader Seed {suffix}",
+                    phone: $"090300{suffix}",
+                    password: "RescuerLeader@123",
+                    role: "RescuerLeader",
+                    birthDayOffset: i + 40);
+
+                await EnsureUserInRoleAsync(userManager,
+                    email: $"dispatcher{suffix}@rescuesystem.com",
+                    userName: $"dispatcher{suffix}",
+                    fullName: $"Dispatcher Seed {suffix}",
+                    phone: $"090400{suffix}",
+                    password: "Dispatcher@123",
+                    role: "Dispatcher",
+                    birthDayOffset: i + 60);
+
+                await EnsureUserInRoleAsync(userManager,
+                    email: $"commander{suffix}@rescuesystem.com",
+                    userName: $"commander{suffix}",
+                    fullName: $"Commander Seed {suffix}",
+                    phone: $"090500{suffix}",
+                    password: "Commander@123",
+                    role: "Commander",
+                    birthDayOffset: i + 80);
             }
+        }
 
-            // Seed Dispatcher Users
-            var dispatcherEmails = new[] { "dispatcher1@rescuesystem.com", "dispatcher2@rescuesystem.com" };
-            foreach (var email in dispatcherEmails)
+        private static async Task EnsureUserInRoleAsync(
+            UserManager<ApplicationUser> userManager,
+            string email,
+            string userName,
+            string fullName,
+            string phone,
+            string password,
+            string role,
+            int birthDayOffset)
+        {
+            if (await userManager.FindByEmailAsync(email) != null)
+                return;
+
+            var user = new ApplicationUser
             {
-                var dispatcherUser = await userManager.FindByEmailAsync(email);
-                if (dispatcherUser == null)
-                {
-                    var newDispatcherUser = new ApplicationUser
-                    {
-                        UserName = email.Split('@')[0],
-                        Email = email,
-                        FullName = $"Dispatcher {email.Split('@')[0]}",
-                        PhoneNumber = $"020000000{Array.IndexOf(dispatcherEmails, email) + 1}",
-                        Address = "Hà Nội, Việt Nam",
-                        DateOfBirth = new DateTime(1992, 3, 20),
-                        IsActive = true,
-                        EmailConfirmed = true
-                    };
-
-                    var result = await userManager.CreateAsync(newDispatcherUser, "Dispatcher@123");
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(newDispatcherUser, "Dispatcher");
-                    }
-                }
-            }
-
-            // Seed Citizen Users
-            var citizenEmails = new[]
-            {
-                "vongoccu1+1@gmail.com",
-                "vongoccu1@gmail.com",
-                "vongoccu1+3@gmail.com"
+                UserName = userName,
+                Email = email,
+                FullName = fullName,
+                PhoneNumber = phone,
+                Address = "Hà Nội, Việt Nam",
+                DateOfBirth = new DateTime(1995, 6, 15).AddDays(birthDayOffset),
+                IsActive = true,
+                EmailConfirmed = true
             };
-            foreach (var email in citizenEmails)
-            {
-                var citizenUser = await userManager.FindByEmailAsync(email);
-                if (citizenUser == null)
-                {
-                    var newCitizenUser = new ApplicationUser
-                    {
-                        UserName = email.Split('@')[0],
-                        Email = email,
-                        FullName = $"Citizen {email.Split('@')[0]}",
-                        PhoneNumber = $"030000000{Array.IndexOf(citizenEmails, email) + 1}",
-                        Address = "Hà Nội, Việt Nam",
-                        DateOfBirth = new DateTime(2000, 7, 10),
-                        IsActive = true,
-                        EmailConfirmed = true
-                    };
 
-                    var result = await userManager.CreateAsync(newCitizenUser, "Citizen@123");
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(newCitizenUser, "Citizen");
-                    }
-                }
-            }
-
-            await context.SaveChangesAsync();
+            var result = await userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+                await userManager.AddToRoleAsync(user, role);
         }
 
         private static async Task SeedLocations(ApplicationDbContext context)
@@ -168,44 +167,21 @@ namespace RescueSystem.Api.Seeders
             if (await context.Locations.AnyAsync())
                 return;
 
-            var locations = new List<Location>
+            var baseLat = 21.0285;
+            var baseLng = 105.8542;
+            var locations = new List<Location>();
+
+            for (var i = 0; i < BatchSize; i++)
             {
-                new Location
+                var offset = i * 0.002;
+                locations.Add(new Location
                 {
-                    Latitude = 21.0285,
-                    Longitude = 105.8542,
-                    Address = "72 Trần Hưng Đạo, Hoan Kiem, Ha Noi",
-                    Landmark = "Hoan Kiem Lake"
-                },
-                new Location
-                {
-                    Latitude = 21.0073,
-                    Longitude = 105.8467,
-                    Address = "1 Phan Boi Chau, Hoan Kiem, Ha Noi",
-                    Landmark = "Thang Long Citadel"
-                },
-                new Location
-                {
-                    Latitude = 21.0355,
-                    Longitude = 105.8597,
-                    Address = "40 Hang Bac, Hoan Kiem, Ha Noi",
-                    Landmark = "Old Quarter"
-                },
-                new Location
-                {
-                    Latitude = 20.9730,
-                    Longitude = 105.8244,
-                    Address = "Vo Nhan Tru, Hai Ba Trung, Ha Noi",
-                    Landmark = "Tran Quoc Pagoda"
-                },
-                new Location
-                {
-                    Latitude = 21.0489,
-                    Longitude = 105.8408,
-                    Address = "Ba Dinh, Ha Noi",
-                    Landmark = "Ba Dinh Square"
-                }
-            };
+                    Latitude = baseLat + offset,
+                    Longitude = baseLng + offset,
+                    Address = $"Seed địa điểm {i + 1}, Hoàn Kiếm, Hà Nội",
+                    Landmark = $"Mốc seed #{i + 1}"
+                });
+            }
 
             await context.Locations.AddRangeAsync(locations);
             await context.SaveChangesAsync();
@@ -216,91 +192,45 @@ namespace RescueSystem.Api.Seeders
             if (await context.RescueTeams.AnyAsync())
                 return;
 
-            var locations = await context.Locations.ToListAsync();
-            var rescuers = await userManager.GetUsersInRoleAsync("Rescuer");
+            var leaders = (await userManager.GetUsersInRoleAsync("RescuerLeader"))
+                .OrderBy(u => u.Email)
+                .ToList();
+            var rescuers = (await userManager.GetUsersInRoleAsync("Rescuer"))
+                .OrderBy(u => u.Email)
+                .ToList();
+            var locations = await context.Locations.OrderBy(l => l.CreatedAt).ToListAsync();
+
+            if (leaders.Count < BatchSize || rescuers.Count < BatchSize || locations.Count < BatchSize)
+                return;
 
             var teams = new List<RescueTeam>();
-
-            if (rescuers.Count > 0 && locations.Count > 0)
+            for (var i = 0; i < BatchSize; i++)
             {
                 teams.Add(new RescueTeam
                 {
-                    TeamName = "Fire Rescue Team Alpha",
-                    TeamLeaderId = rescuers[0].Id,
-                    BaseLocationId = locations[0].Id,
-                    Status = TeamStatus.AVAILABLE
+                    TeamName = $"Seed Rescue Team {i + 1:D2}",
+                    TeamLeaderId = leaders[i].Id,
+                    BaseLocationId = locations[i].Id,
+                    Status = i % 3 == 0 ? TeamStatus.ON_MISSION : TeamStatus.AVAILABLE
                 });
-
-                if (rescuers.Count > 1 && locations.Count > 1)
-                {
-                    teams.Add(new RescueTeam
-                    {
-                        TeamName = "Medical Response Team Beta",
-                        TeamLeaderId = rescuers[1].Id,
-                        BaseLocationId = locations[1].Id,
-                        Status = TeamStatus.AVAILABLE
-                    });
-                }
-
-                if (rescuers.Count > 2 && locations.Count > 2)
-                {
-                    teams.Add(new RescueTeam
-                    {
-                        TeamName = "Disaster Relief Team Gamma",
-                        TeamLeaderId = rescuers[2].Id,
-                        BaseLocationId = locations[2].Id,
-                        Status = TeamStatus.AVAILABLE
-                    });
-                }
-
-                // Save teams first to get their Ids
-                await context.RescueTeams.AddRangeAsync(teams);
-                await context.SaveChangesAsync();
-
-                // Assign members to teams (including the leader as a member)
-                var createdTeams = await context.RescueTeams
-                    .Include(t => t.Members)
-                    .OrderBy(t => t.CreatedAt)
-                    .ToListAsync();
-
-                for (int i = 0; i < createdTeams.Count; i++)
-                {
-                    var team = createdTeams[i];
-
-                    // Add the team leader as a member if exists
-                    if (i < rescuers.Count)
-                    {
-                        var leader = await context.Users.FindAsync(rescuers[i].Id);
-                        if (leader != null && !team.Members.Any(m => m.Id == leader.Id))
-                        {
-                            team.Members.Add(leader);
-                        }
-                    }
-
-                    // Add one or two additional members if available
-                    var firstMemberIndex = (i + 1) % rescuers.Count;
-                    if (rescuers.Count > firstMemberIndex)
-                    {
-                        var member1 = await context.Users.FindAsync(rescuers[firstMemberIndex].Id);
-                        if (member1 != null && !team.Members.Any(m => m.Id == member1.Id))
-                        {
-                            team.Members.Add(member1);
-                        }
-                    }
-
-                    var secondMemberIndex = (i + 2) % rescuers.Count;
-                    if (rescuers.Count > 2 && rescuers.Count > secondMemberIndex)
-                    {
-                        var member2 = await context.Users.FindAsync(rescuers[secondMemberIndex].Id);
-                        if (member2 != null && !team.Members.Any(m => m.Id == member2.Id))
-                        {
-                            team.Members.Add(member2);
-                        }
-                    }
-                }
-
-                await context.SaveChangesAsync();
             }
+
+            await context.RescueTeams.AddRangeAsync(teams);
+            await context.SaveChangesAsync();
+
+            var createdTeams = await context.RescueTeams
+                .Include(t => t.Members)
+                .OrderBy(t => t.TeamName)
+                .ToListAsync();
+
+            for (var i = 0; i < BatchSize; i++)
+            {
+                var member = await context.Users.FindAsync(rescuers[i].Id);
+                if (member != null && createdTeams.Count > i)
+                    createdTeams[i].Members.Add(member);
+            }
+
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedRequests(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
@@ -308,63 +238,185 @@ namespace RescueSystem.Api.Seeders
             if (await context.Requests.AnyAsync())
                 return;
 
-            var locations = await context.Locations.ToListAsync();
-            var citizens = await userManager.GetUsersInRoleAsync("Citizen");
+            var locations = await context.Locations.OrderBy(l => l.CreatedAt).ToListAsync();
+            var citizens = (await userManager.GetUsersInRoleAsync("Citizen"))
+                .OrderBy(u => u.Email)
+                .ToList();
 
-            if (citizens.Count == 0 || locations.Count == 0)
+            if (citizens.Count < BatchSize || locations.Count < BatchSize)
                 return;
 
-            var requests = new List<RescueRequest>
+            var statuses = new[]
             {
-                new RescueRequest
-                {
-                    UserId = citizens[0].Id,
-                    EmergencyType = EmergencyType.FIRE,
-                    Priority = Priority.CRITICAL,
-                    Status = RequestStatus.PENDING,
-                    LocationId = locations[0].Id,
-                    Description = "Cháy lớn tại khu phố cổ, cần sơ tán khẩn cấp"
-                },
-                new RescueRequest
-                {
-                    UserId = citizens[1].Id,
-                    EmergencyType = EmergencyType.MEDICAL_EMERGENCY,
-                    Priority = Priority.HIGH,
-                    Status = RequestStatus.ACCEPTED,
-                    LocationId = locations[1].Id,
-                    Description = "Bệnh nhân gặp chấn thương nặng, cần cấp cứu ngay"
-                },
-                new RescueRequest
-                {
-                    UserId = citizens[2].Id,
-                    EmergencyType = EmergencyType.FLOOD,
-                    Priority = Priority.HIGH,
-                    Status = RequestStatus.IN_PROGRESS,
-                    LocationId = locations[2].Id,
-                    Description = "Nước lũ dâng cao, cần sơ tán dân cư"
-                },
-                new RescueRequest
-                {
-                    UserId = citizens[0].Id,
-                    EmergencyType = EmergencyType.TRAFFIC_EMERGENCY,
-                    Priority = Priority.MEDIUM,
-                    Status = RequestStatus.PENDING,
-                    LocationId = locations[3].Id,
-                    Description = "Tai nạn giao thông trên đường Tây Sơn"
-                },
-                new RescueRequest
-                {
-                    UserId = citizens[1].Id,
-                    EmergencyType = EmergencyType.BUILDING_COLLAPSE,
-                    Priority = Priority.CRITICAL,
-                    Status = RequestStatus.COMPLETED,
-                    LocationId = locations[4].Id,
-                    Description = "Sập một phần tòa nhà cũ, có người bị kẹt"
-                }
+                RequestStatus.PENDING,
+                RequestStatus.ACCEPTED,
+                RequestStatus.IN_PROGRESS,
+                RequestStatus.COMPLETED,
+                RequestStatus.PENDING,
+                RequestStatus.ACCEPTED,
+                RequestStatus.IN_PROGRESS,
+                RequestStatus.COMPLETED,
+                RequestStatus.PENDING,
+                RequestStatus.ACCEPTED
             };
+
+            var requests = new List<RescueRequest>();
+            for (var i = 0; i < BatchSize; i++)
+            {
+                requests.Add(new RescueRequest
+                {
+                    UserId = citizens[i].Id,
+                    EmergencyType = (EmergencyType)((i % 8) + 1),
+                    Priority = (Priority)((i % 4) + 1),
+                    Status = statuses[i],
+                    LocationId = locations[i].Id,
+                    Description = $"Yêu cầu cứu hộ seed #{i + 1} — liên kết citizen & location."
+                });
+            }
 
             await context.Requests.AddRangeAsync(requests);
             await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedMissions(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            if (await context.Missions.AnyAsync())
+                return;
+
+            var requests = await context.Requests.OrderBy(r => r.CreatedAt).ToListAsync();
+            var teams = await context.RescueTeams.OrderBy(t => t.TeamName).ToListAsync();
+            var dispatchers = (await userManager.GetUsersInRoleAsync("Dispatcher"))
+                .OrderBy(u => u.Email)
+                .ToList();
+
+            if (requests.Count < BatchSize || teams.Count < BatchSize || dispatchers.Count < BatchSize)
+                return;
+
+            // Request[0] giữ PENDING không mission; các request 1..6 có mission để nối dispatcher + team
+            const int missionCount = 6;
+            var missions = new List<Mission>();
+            var missionStatuses = new[]
+            {
+                MissionStatus.ASSIGNED,
+                MissionStatus.EN_ROUTE,
+                MissionStatus.ON_SITE,
+                MissionStatus.IN_PROGRESS,
+                MissionStatus.COMPLETED,
+                MissionStatus.COMPLETED
+            };
+
+            for (var i = 0; i < missionCount; i++)
+            {
+                var req = requests[i + 1];
+                var start = DateTime.UtcNow.AddHours(-(i + 1) * 3);
+                var end = missionStatuses[i] == MissionStatus.COMPLETED
+                    ? start.AddHours(2)
+                    : (DateTime?)null;
+
+                missions.Add(new Mission
+                {
+                    RequestId = req.Id,
+                    DispatcherId = dispatchers[i].Id,
+                    RescueTeamId = teams[i].Id,
+                    StartTime = start,
+                    EndTime = end,
+                    Status = missionStatuses[i]
+                });
+            }
+
+            await context.Missions.AddRangeAsync(missions);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedMissionHistories(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            if (await context.MissionHistories.AnyAsync())
+                return;
+
+            var missions = await context.Missions
+                .Include(m => m.RescueTeam)
+                .OrderBy(m => m.StartTime)
+                .ToListAsync();
+
+            var commanders = (await userManager.GetUsersInRoleAsync("Commander"))
+                .OrderBy(u => u.Email)
+                .ToList();
+
+            if (missions.Count == 0 || commanders.Count == 0)
+                return;
+
+            var histories = new List<MissionHistory>();
+            var commanderIdx = 0;
+
+            foreach (var mission in missions)
+            {
+                var changedBy = commanders[commanderIdx % commanders.Count];
+                commanderIdx++;
+
+                histories.Add(new MissionHistory
+                {
+                    MissionId = mission.Id,
+                    FromStatus = null,
+                    ToStatus = MissionStatus.ASSIGNED,
+                    ChangedById = changedBy.Id,
+                    Note = "Seed: tạo nhiệm vụ"
+                });
+
+                if (mission.Status != MissionStatus.ASSIGNED)
+                {
+                    histories.Add(new MissionHistory
+                    {
+                        MissionId = mission.Id,
+                        FromStatus = MissionStatus.ASSIGNED,
+                        ToStatus = mission.Status,
+                        ChangedById = changedBy.Id,
+                        Note = "Seed: cập nhật trạng thái hiện tại"
+                    });
+                }
+            }
+
+            await context.MissionHistories.AddRangeAsync(histories);
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedReports(ApplicationDbContext context)
+        {
+            if (await context.Reports.AnyAsync())
+                return;
+
+            var completedMissions = await context.Missions
+                .Where(m => m.Status == MissionStatus.COMPLETED)
+                .Include(m => m.RescueTeam!)
+                    .ThenInclude(t => t.Members)
+                .OrderBy(m => m.StartTime)
+                .ToListAsync();
+
+            if (completedMissions.Count == 0)
+                return;
+
+            var reports = new List<Report>();
+
+            foreach (var mission in completedMissions)
+            {
+                var authorId = mission.RescueTeam?.Members.FirstOrDefault()?.Id;
+                if (authorId == null)
+                    continue;
+
+                reports.Add(new Report
+                {
+                    MissionId = mission.Id,
+                    CreatedById = authorId.Value,
+                    Content = $"Báo cáo hoàn thành seed — mission {mission.Id}",
+                    AttachmentUrl = string.Empty,
+                    Type = ReportType.COMPLETION
+                });
+            }
+
+            if (reports.Count > 0)
+            {
+                await context.Reports.AddRangeAsync(reports);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
