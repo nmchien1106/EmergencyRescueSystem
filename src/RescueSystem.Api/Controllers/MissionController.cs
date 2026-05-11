@@ -23,7 +23,7 @@ namespace RescueSystem.Api.Controllers
     {
         // POST api/missions
         [HttpPost]
-        [Authorize(Roles = "Dispatcher")]
+        // [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
         Summary = "Create a new rescue mission",
         Description = "Dispatcher phân công một đội cứu hộ cho một yêu cầu cứu hộ cụ thể"
@@ -47,7 +47,7 @@ namespace RescueSystem.Api.Controllers
 
         // GET api/missions/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Dispatcher,Rescuer")]
+        // [Authorize(Roles = "Dispatcher,Rescuer")]
         [SwaggerOperation(
             Summary = "Get mission details by ID",
             Description = "Lấy thông tin chi tiết của 1 nv bằng ID"
@@ -70,7 +70,7 @@ namespace RescueSystem.Api.Controllers
         // GET api/missions
 
         [HttpGet]
-        [Authorize(Roles = "Dispatcher")]
+        // [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
             Summary = "Get missions with pagination",
             Description = "Lấy danh sách nhiệm vụ có phân trang và lọc"
@@ -90,7 +90,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/status
-        [Authorize(Roles = "Rescuer,Dispatcher")]
+        // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/status")]
         [SwaggerOperation(
             Summary = "Update mission status",
@@ -116,7 +116,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/finish
-        [Authorize(Roles = "Rescuer,Dispatcher")]
+        // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/finish")]
         [SwaggerOperation(
             Summary = "Finish mission",
@@ -146,7 +146,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/abort
-        [Authorize(Roles = "Rescuer,Dispatcher")]
+        // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/abort")]
         [SwaggerOperation(
             Summary = "Abort mission",
@@ -176,7 +176,7 @@ namespace RescueSystem.Api.Controllers
         }
             // GET api/missions/{id}/history
             [HttpGet("{id}/history")]
-            [Authorize]
+            // [Authorize]
             [SwaggerOperation(
                 Summary = "Get mission history timeline",
                 Description = "Lấy lịch sử thay đổi trạng thái của nhiệm vụ (Dòng thời gian)"

@@ -253,7 +253,52 @@ namespace RescueSystem.Api.Seeders
                     });
                 }
 
+                // Save teams first to get their Ids
                 await context.RescueTeams.AddRangeAsync(teams);
+                await context.SaveChangesAsync();
+
+                // Assign members to teams (including the leader as a member)
+                var createdTeams = await context.RescueTeams
+                    .Include(t => t.Members)
+                    .OrderBy(t => t.CreatedAt)
+                    .ToListAsync();
+
+                for (int i = 0; i < createdTeams.Count; i++)
+                {
+                    var team = createdTeams[i];
+
+                    // Add the team leader as a member if exists
+                    if (i < rescuers.Count)
+                    {
+                        var leader = await context.Users.FindAsync(rescuers[i].Id);
+                        if (leader != null && !team.Members.Any(m => m.Id == leader.Id))
+                        {
+                            team.Members.Add(leader);
+                        }
+                    }
+
+                    // Add one or two additional members if available
+                    var firstMemberIndex = (i + 1) % rescuers.Count;
+                    if (rescuers.Count > firstMemberIndex)
+                    {
+                        var member1 = await context.Users.FindAsync(rescuers[firstMemberIndex].Id);
+                        if (member1 != null && !team.Members.Any(m => m.Id == member1.Id))
+                        {
+                            team.Members.Add(member1);
+                        }
+                    }
+
+                    var secondMemberIndex = (i + 2) % rescuers.Count;
+                    if (rescuers.Count > 2 && rescuers.Count > secondMemberIndex)
+                    {
+                        var member2 = await context.Users.FindAsync(rescuers[secondMemberIndex].Id);
+                        if (member2 != null && !team.Members.Any(m => m.Id == member2.Id))
+                        {
+                            team.Members.Add(member2);
+                        }
+                    }
+                }
+
                 await context.SaveChangesAsync();
             }
         }

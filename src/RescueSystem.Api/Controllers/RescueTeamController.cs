@@ -25,7 +25,7 @@ namespace RescueSystem.Api.Controllers
     {
         // GET: api/rescue-teams
         [HttpGet]
-        [Authorize(Roles = "Dispatcher,RescuerLeader")]
+        //[Authorize(Roles = "Dispatcher,RescuerLeader")]
         [SwaggerOperation(
             Summary = "Get all rescue teams",
             Description = "Lấy tất cả các đội cứu hộ"
@@ -60,28 +60,30 @@ namespace RescueSystem.Api.Controllers
         [SwaggerResponse(500, "Internal server error")]
         public async Task<ActionResult<object>> CreateRescueTeam([FromBody] CreateRescueTeamCommand dto)
         {
-            var res=await mediator.Send(dto);
+            var res = await mediator.Send(dto);
 
-            return StatusCode(StatusCodes.Status201Created, ApiResponse<object>.SuccessResponse(null, "Rescue team created successfully", StatusCodes.Status201Created));   
+            return StatusCode(StatusCodes.Status201Created, ApiResponse<object>.SuccessResponse(null, "Rescue team created successfully", StatusCodes.Status201Created));
         }
         // PUT: api/rescue-teams/{id}
         [HttpPut("{teamId}/status/{newStatus}")]
-         [SwaggerOperation(
+        [SwaggerOperation(
             Summary = "Update rescue team status",
             Description = "Cập nhật trạng thái của đội cứu hộ"
         )]
         [SwaggerResponse(200, "Status updated successfully")]
         [SwaggerResponse(404, "Rescue team not found")]
         [SwaggerResponse(500, "Internal server error")]
-        public async Task<ActionResult<object>> UpdateRescueTeamStatus([FromRoute] Guid teamId, [FromRoute] TeamStatus newStatus) {
-            var command = new UpdateTeamStatusCommand {
+        public async Task<ActionResult<object>> UpdateRescueTeamStatus([FromRoute] Guid teamId, [FromRoute] TeamStatus newStatus)
+        {
+            var command = new UpdateTeamStatusCommand
+            {
                 TeamId = teamId,
                 NewStatus = newStatus
             };
 
             await mediator.Send(command);
 
-            return Ok(ApiResponse<object>.SuccessResponse(null,"Cập nhật trạng thái thành công", StatusCodes.Status200OK));
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Cập nhật trạng thái thành công", StatusCodes.Status200OK));
         }
         // DELETE: api/rescue-teams/{id}
         //Note: Thực tế thì dùng delete để xóa cứng là kh ổn, nên dùng soft delete(cập nhật 1 trường deleted thành true) tránh ảnh hưởng đến mấy cái foreign key
@@ -89,7 +91,7 @@ namespace RescueSystem.Api.Controllers
         [SwaggerOperation(
             Summary = "Delete a rescue team",
             Description = "Xóa một đội cứu hộ"
-        )]      
+        )]
         [SwaggerResponse(200, "Rescue team deleted successfully")]
         [SwaggerResponse(404, "Rescue team not found")]
         [SwaggerResponse(500, "Internal server error")]
@@ -101,7 +103,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // GET : api/rescue-teams/{teamId}/members
-    
+
         [HttpGet("{teamId}/members")]
         [SwaggerOperation(
             Summary = "Get members of a rescue team",
@@ -116,7 +118,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // POST : api/rescue-teams/{teamId}/members
-        [HttpPost("{teamId}/member/{memberId}")] 
+        [HttpPost("{teamId}/member/{memberId}")]
         [SwaggerOperation(
             Summary = "Add member to rescue team",
             Description = "Thêm thành viên vào đội cứu hộ"
@@ -124,18 +126,20 @@ namespace RescueSystem.Api.Controllers
         [SwaggerResponse(200, "Member added successfully")]
         [SwaggerResponse(404, "Rescue team or member not found")]
         [SwaggerResponse(500, "Internal server error")]
-        public async Task<ActionResult<object>> AddMemberToTeam([FromRoute] Guid teamId, [FromRoute] Guid memberId) {
-            
-            var command = new AddMemberToRescueTeamCommand {
+        public async Task<ActionResult<object>> AddMemberToTeam([FromRoute] Guid teamId, [FromRoute] Guid memberId)
+        {
+
+            var command = new AddMemberToRescueTeamCommand
+            {
                 TeamId = teamId,
-                MemberId=memberId
+                MemberId = memberId
             };
 
             await mediator.Send(command);
 
-            return Ok(ApiResponse<object>.SuccessResponse(null,"Thêm thành viên thành công", StatusCodes.Status200OK));
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Thêm thành viên thành công", StatusCodes.Status200OK));
         }
-        
+
         // DELETE : api/rescue-teams/{teamId}/members/{memberId}
         [HttpDelete("{teamId}/member/{memberId}")]
         [SwaggerOperation(
@@ -145,15 +149,17 @@ namespace RescueSystem.Api.Controllers
         [SwaggerResponse(200, "Member removed successfully")]
         [SwaggerResponse(404, "Rescue team or member not found")]
         [SwaggerResponse(500, "Internal server error")]
-        public async Task<ActionResult<object>> RemoveMemberFromTeam([FromRoute] Guid teamId, [FromRoute] Guid memberId) {
-            var command = new RemoveMemberFromRescueTeamCommand {
+        public async Task<ActionResult<object>> RemoveMemberFromTeam([FromRoute] Guid teamId, [FromRoute] Guid memberId)
+        {
+            var command = new RemoveMemberFromRescueTeamCommand
+            {
                 TeamId = teamId,
-                MemberId=memberId
+                MemberId = memberId
             };
 
             await mediator.Send(command);
 
-            return Ok(ApiResponse<object>.SuccessResponse(null,"Xóa thành viên thành công", StatusCodes.Status200OK));
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Xóa thành viên thành công", StatusCodes.Status200OK));
         }
         // GET : api/rescue-teams/{teamId}/missions
         //TODO :CHECK
