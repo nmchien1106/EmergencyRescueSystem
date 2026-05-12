@@ -48,7 +48,9 @@ namespace RescueSystem.Infrastructure
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<IMissionRepository, MissionRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();
-            
+            services.AddScoped<IChecklistRepository, ChecklistRepository>();
+            services.AddScoped<IChecklistItemRepository, ChecklistItemRepository>();
+
             // Add Email service
             services.AddScoped<IEmailService, EmailService>();
 

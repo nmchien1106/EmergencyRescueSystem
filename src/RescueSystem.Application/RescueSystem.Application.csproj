@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\ChecklistItem\Queries\" />
     <Folder Include="Features\Request\Commands\UpdateStatusRequest\" />
     <Folder Include="Features\Request\Queries\GetRequests\" />
     <Folder Include="Features\Request\Queries\GetRequestByUserId\" />

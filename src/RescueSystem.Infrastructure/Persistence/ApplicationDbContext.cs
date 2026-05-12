@@ -20,6 +20,8 @@ namespace RescueSystem.Infrastructure.Persistence
         public DbSet<Mission> Missions { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<OtpCode> OtpCodes { get; set; }
+        public DbSet<Checklist> Checklists { get; set; }
+        public DbSet<ChecklistItem> ChecklistItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
