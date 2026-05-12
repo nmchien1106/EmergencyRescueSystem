@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RescueSystem.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using RescueSystem.Infrastructure.Persistence;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511043249_rescue-team")]
+    partial class rescueteam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -665,9 +668,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("BaseLocationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -695,8 +695,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BaseLocationId");
 
@@ -884,10 +882,6 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.RescueTeam", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
-                        .WithMany("TeamsAsMember")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("RescueSystem.Domain.Entities.Location", "BaseLocation")
                         .WithMany()
                         .HasForeignKey("BaseLocationId")
@@ -916,8 +910,6 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("Requests");
-
-                    b.Navigation("TeamsAsMember");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
