@@ -1,0 +1,16 @@
+Run these commands in Package Manager Console (or dotnet CLI) to add migration and update DB:
+
+// Using dotnet CLI (preferred)
+cd "D:\My Workspace\Đồ Án\RescueSystem\src\RescueSystem.Infrastructure"
+
+// from solution root run:
+cd "D:\My Workspace\Đồ Án\RescueSystem"
+// add migration
+dotnet ef migrations add AddRescueTeamIdToUsers -p src/RescueSystem.Infrastructure/RescueSystem.Infrastructure.csproj -s src/RescueSystem.Api/RescueSystem.Api.csproj
+
+// update database
+dotnet ef database update -p src/RescueSystem.Infrastructure/RescueSystem.Infrastructure.csproj -s src/RescueSystem.Api/RescueSystem.Api.csproj
+
+// Or use Package Manager Console in Visual Studio:
+// PM> Add-Migration AddRescueTeamIdToUsers -Project RescueSystem.Infrastructure -StartupProject RescueSystem.Api
+// PM> Update-Database -Project RescueSystem.Infrastructure -StartupProject RescueSystem.Api

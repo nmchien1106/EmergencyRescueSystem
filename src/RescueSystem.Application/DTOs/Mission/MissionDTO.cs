@@ -20,3 +20,5 @@ namespace RescueSystem.Application.DTOs.Mission
         public string Status { get; set; }
     }
 }
+
+//Note: Sao lại để mấy cái name name ở đây hè, có thể lấy từ db rồi map vào chứ để thế này hơi k ổn, nếu để thế này thì phải đảm bảo lúc tạo mission phải lấy tên dispatcher và team rồi gán vào, nếu sau này có đổi tên thì lại phải update lại mấy cái mission liên quan nữa, nên tốt nhất là bỏ mấy cái name đi chỉ giữ id thôi, còn muốn lấy tên thì join với bảng user và rescue team rồi map vào DTO là được

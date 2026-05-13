@@ -22,6 +22,7 @@ namespace RescueSystem.Domain.Entities
         public ApplicationUser? Dispatcher { get; set; }
         public RescueTeam? RescueTeam { get; set; }
         public ICollection<Report> Reports { get; set; } = new List<Report>();
+        public ICollection<MissionHistory> MissionHistories { get; set; } = new List<MissionHistory>();
         public ICollection<Checklist> Checklists { get; set; }
     }
 }

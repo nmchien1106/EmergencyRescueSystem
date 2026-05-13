@@ -60,6 +60,7 @@ namespace RescueSystem.Infrastructure
             services.Configure<CloudinarySetting>(
                 configuration.GetSection("Cloudinary"));
             services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddScoped<IRescueTeamRepository, RescueTeamRepository>();
             return services;
         }
     }

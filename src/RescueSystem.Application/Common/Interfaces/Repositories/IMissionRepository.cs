@@ -15,6 +15,10 @@ namespace RescueSystem.Application.Common.Interfaces.Repositories
         Task UpdateAsync(Mission mission);
         Task DeleteAsync(Guid id);
 
+        // History
+        Task AddHistoryAsync(MissionHistory history);
+        Task<IEnumerable<MissionHistory>> GetHistoriesByMissionIdAsync(Guid missionId);
+
         IQueryable<Mission> Query();
         Task<Mission?> GetByRequestAndTeamAsync(Guid requestId, Guid rescueTeamId);
         Task<Mission?> GetActiveMissionByTeamIdAsync(Guid rescueTeamId);

@@ -21,6 +21,32 @@ builder.Services.AddProblemDetails();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+// ✅ ADD CORS Configuration
+builder.Services.AddCors(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        // Development: Allow all origins for easier testing
+        options.AddPolicy("AllowAll", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    }
+    else
+    {
+        // Production: Allow specific origins only
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.WithOrigins("https://yourdomain.com", "https://www.yourdomain.com")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    }
+});
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"]!;
 builder.Services.AddAuthentication(options =>
@@ -133,6 +159,9 @@ if (app.Environment.IsDevelopment())
 
 // Register global exception middleware early in the pipeline
 app.UseMiddleware<RescueSystem.Api.Middlewares.GlobalExceptionMiddleware>();
+
+// ✅ USE CORS - Must be before UseAuthentication()
+app.UseCors(builder.Environment.IsDevelopment() ? "AllowAll" : "AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

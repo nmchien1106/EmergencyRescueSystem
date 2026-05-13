@@ -18,6 +18,7 @@ namespace RescueSystem.Infrastructure.Persistence
         public DbSet<RescueRequest> Requests { get; set; }
         public DbSet<RescueTeam> RescueTeams { get; set; }
         public DbSet<Mission> Missions { get; set; }
+        public DbSet<MissionHistory> MissionHistories { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<OtpCode> OtpCodes { get; set; }
         public DbSet<Checklist> Checklists { get; set; }

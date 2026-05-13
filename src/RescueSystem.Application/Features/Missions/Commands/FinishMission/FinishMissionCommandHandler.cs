@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
+using RescueSystem.Domain.Entities;
 using RescueSystem.Domain.Enums;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RescueSystem.Application.Features.Missions.Commands.FinishMission
 {
@@ -24,12 +27,26 @@ namespace RescueSystem.Application.Features.Missions.Commands.FinishMission
             {
                 throw new Exception("Chỉ có thể hoàn thành khi nhiệm vụ đang IN_PROGRESS");
             }
-         
+
+            var previousStatus = mission.Status;
+
             mission.Status = MissionStatus.COMPLETED;
             mission.EndTime = DateTime.UtcNow;
             mission.UpdatedAt = DateTime.UtcNow;
 
+            var history = new MissionHistory
+            {
+                MissionId = mission.Id,
+                FromStatus = previousStatus,
+                ToStatus = mission.Status,
+                ChangedById = request.ChangedById,
+                Note = request.Note,
+                CreatedAt = DateTime.UtcNow.AddHours(7)
+            };
+
             await _missionRepository.UpdateAsync(mission);
+            await _missionRepository.AddHistoryAsync(history);
+
             return true;
         }
     }

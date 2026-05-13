@@ -12,6 +12,7 @@ using RescueSystem.Application.Features.Missions.Queries.GetMissionsPagination;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Features.Missions.Commands.AbortMission;
+using RescueSystem.Application.Features.Missions.Queries.GetMissionHistory;
 using Microsoft.Identity.Client;
 
 namespace RescueSystem.Api.Controllers
@@ -22,6 +23,7 @@ namespace RescueSystem.Api.Controllers
     {
         // POST api/missions
         [HttpPost]
+        // [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
         Summary = "Create a new rescue mission",
         Description = "Dispatcher phân công một đội cứu hộ cho một yêu cầu cứu hộ cụ thể"
@@ -45,7 +47,7 @@ namespace RescueSystem.Api.Controllers
 
         // GET api/missions/{id}
         [HttpGet("{id}")]
-        [Authorize(Roles = "Dispatcher,Rescuer")]
+        // [Authorize(Roles = "Dispatcher,Rescuer")]
         [SwaggerOperation(
             Summary = "Get mission details by ID",
             Description = "Lấy thông tin chi tiết của 1 nv bằng ID"
@@ -68,7 +70,7 @@ namespace RescueSystem.Api.Controllers
         // GET api/missions
 
         [HttpGet]
-        [Authorize(Roles = "Dispatcher")]
+        // [Authorize(Roles = "Dispatcher")]
         [SwaggerOperation(
             Summary = "Get missions with pagination",
             Description = "Lấy danh sách nhiệm vụ có phân trang và lọc"
@@ -88,7 +90,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/status
-        [Authorize(Roles = "Rescuer,Dispatcher")]
+        // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/status")]
         [SwaggerOperation(
             Summary = "Update mission status",
@@ -114,6 +116,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/finish
+        //Note: Nên chuyển thành RescuerLeader
         [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/finish")]
         [SwaggerOperation(
@@ -144,7 +147,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         // PUT api/missions/{id}/abort
-        [Authorize(Roles = "Rescuer,Dispatcher")]
+        // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/abort")]
         [SwaggerOperation(
             Summary = "Abort mission",
@@ -172,7 +175,28 @@ namespace RescueSystem.Api.Controllers
                 )
             );
         }
+            // GET api/missions/{id}/history
+            [HttpGet("{id}/history")]
+            // [Authorize]
+            [SwaggerOperation(
+                Summary = "Get mission history timeline",
+                Description = "Lấy lịch sử thay đổi trạng thái của nhiệm vụ (Dòng thời gian)"
+            )]
+            [SwaggerResponse(200, "Mission history retrieved successfully", typeof(ApiResponse<IEnumerable<MissionHistoryDTO>>))]
+            [SwaggerResponse(404, "Mission not found")]
+            public async Task<ActionResult<object>> GetMissionHistory([FromRoute] Guid id)
+            {
+                var res = await mediator.Send(new GetMissionHistoryQuery { MissionId = id });
+
+                return Ok(
+                    ApiResponse<IEnumerable<MissionHistoryDTO>>.SuccessResponse(
+                        data: res,
+                        message: "Lấy lịch sử nhiệm vụ thành công",
+                        statusCode: StatusCodes.Status200OK
+                    )
+                );
+            }
+        }
     }
-}
 
 

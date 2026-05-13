@@ -10,5 +10,7 @@ namespace RescueSystem.Application.Features.Missions.Commands.UpdateMission
     {
         public Guid MissionId { get; set; }
         public MissionStatus Status { get; set; }
+        public Guid ChangedById { get; set; }
+        public string Note { get; set; } = string.Empty;
     }
 }
