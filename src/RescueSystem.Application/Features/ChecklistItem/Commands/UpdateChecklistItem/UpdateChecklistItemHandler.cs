@@ -28,9 +28,10 @@ namespace RescueSystem.Application.Features.ChecklistItem.Commands.UpdateCheckli
 
             item.Description = request.Description;
             item.IsCheck = request.IsCheck;
+            item.UpdatedAt = DateTime.UtcNow;
 
             _itemRepository.Update(item);
-            await _itemRepository.SaveChangesAsync();
+            await _itemRepository.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
         }

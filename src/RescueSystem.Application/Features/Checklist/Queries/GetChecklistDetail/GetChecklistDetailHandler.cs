@@ -28,12 +28,16 @@ namespace RescueSystem.Application.Features.Checklist.Queries.GetChecklistDetail
                 Id = checklist.Id,
                 Title = checklist.Title,
                 MissionId = checklist.MissionId,
+                CreatedAt = checklist.CreatedAt,
+                UpdatedAt = checklist.UpdatedAt,
 
                 Items = checklist.ChecklistItems.Select(i => new ChecklistItemDTO
                 {
                     Id = i.Id,
                     Description = i.Description,
-                    IsCheck = i.IsCheck
+                    IsCheck = i.IsCheck,
+                    CreatedAt = i.CreatedAt,
+                    UpdatedAt = i.UpdatedAt
                 }).ToList()
             };
         }

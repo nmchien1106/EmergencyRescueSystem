@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace RescueSystem.Application.Features.Checklist.Commands.CreateChecklist
+namespace RescueSystem.Application.Features.Checklist.Commands.UpdateChecklist
 {
-    public class CreateChecklistValidator : AbstractValidator<CreateChecklistCommand>
+    public class UpdateChecklistValidator : AbstractValidator<UpdateChecklistCommand>
     {
-        public CreateChecklistValidator() 
+        public UpdateChecklistValidator()
         {
             RuleFor(x => x.Title)
                .NotEmpty()

@@ -12,8 +12,8 @@ using RescueSystem.Infrastructure.Persistence;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260511045538_fix")]
-    partial class fix
+    [Migration("20260513090655_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -327,6 +327,67 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.HasIndex("RescueTeamId");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("MissionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MissionId");
+
+                    b.ToTable("Checklists", (string)null);
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ChecklistItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChecklistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCheck")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChecklistId");
+
+                    b.ToTable("ChecklistItems");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Contact", b =>
@@ -668,9 +729,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("BaseLocationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -698,8 +756,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BaseLocationId");
 
@@ -778,6 +834,28 @@ namespace RescueSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("MemberOfTeam");
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.Mission", "Mission")
+                        .WithMany("Checklists")
+                        .HasForeignKey("MissionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Mission");
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ChecklistItem", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.Checklist", "Checklist")
+                        .WithMany("ChecklistItems")
+                        .HasForeignKey("ChecklistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Checklist");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Contact", b =>
@@ -887,10 +965,6 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.RescueTeam", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
-                        .WithMany("TeamsAsMember")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("RescueSystem.Domain.Entities.Location", "BaseLocation")
                         .WithMany()
                         .HasForeignKey("BaseLocationId")
@@ -919,12 +993,17 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("Requests");
+                });
 
-                    b.Navigation("TeamsAsMember");
+            modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
+                {
+                    b.Navigation("ChecklistItems");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
                 {
+                    b.Navigation("Checklists");
+
                     b.Navigation("MissionHistories");
 
                     b.Navigation("Reports");

@@ -45,7 +45,6 @@ namespace RescueSystem.Infrastructure.Persistence.Configurations
                 .HasForeignKey(e => e.BaseLocationId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Configure one-to-many between RescueTeam and ApplicationUser for team members (single team per user)
             builder.HasMany(e => e.Members)
                 .WithOne(u => u.MemberOfTeam)
                 .HasForeignKey(u => u.RescueTeamId)

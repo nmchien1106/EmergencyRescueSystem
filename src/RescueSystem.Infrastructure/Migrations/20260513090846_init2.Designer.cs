@@ -12,8 +12,8 @@ using RescueSystem.Infrastructure.Persistence;
 namespace RescueSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260512110619_AddChecklist")]
-    partial class AddChecklist
+    [Migration("20260513090846_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace RescueSystem.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ApplicationUserRescueTeam", b =>
-                {
-                    b.Property<Guid>("MembersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TeamsAsMemberId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MembersId", "TeamsAsMemberId");
-
-                    b.HasIndex("TeamsAsMemberId");
-
-                    b.ToTable("TeamMembers", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -311,6 +296,9 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("RescueTeamId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -335,6 +323,8 @@ namespace RescueSystem.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RescueTeamId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -531,6 +521,44 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.HasIndex("RescueTeamId");
 
                     b.ToTable("Missions", (string)null);
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.MissionHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChangedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FromStatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("MissionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ToStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("MissionId");
+
+                    b.ToTable("MissionHistories", (string)null);
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.OtpCode", b =>
@@ -736,21 +764,6 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.ToTable("RescueTeams", (string)null);
                 });
 
-            modelBuilder.Entity("ApplicationUserRescueTeam", b =>
-                {
-                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RescueSystem.Domain.Entities.RescueTeam", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsAsMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("RescueSystem.Domain.Entities.ApplicationRole", null)
@@ -813,6 +826,16 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.RescueTeam", "MemberOfTeam")
+                        .WithMany("Members")
+                        .HasForeignKey("RescueTeamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("MemberOfTeam");
+                });
+
             modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
                 {
                     b.HasOne("RescueSystem.Domain.Entities.Mission", "Mission")
@@ -871,6 +894,25 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Request");
 
                     b.Navigation("RescueTeam");
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.MissionHistory", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", "ChangedBy")
+                        .WithMany()
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RescueSystem.Domain.Entities.Mission", "Mission")
+                        .WithMany("MissionHistories")
+                        .HasForeignKey("MissionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("Mission");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Report", b =>
@@ -962,6 +1004,8 @@ namespace RescueSystem.Infrastructure.Migrations
                 {
                     b.Navigation("Checklists");
 
+                    b.Navigation("MissionHistories");
+
                     b.Navigation("Reports");
                 });
 
@@ -974,6 +1018,8 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.RescueTeam", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Missions");
                 });
 #pragma warning restore 612, 618

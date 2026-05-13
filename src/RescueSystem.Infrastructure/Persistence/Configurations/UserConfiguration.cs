@@ -35,6 +35,7 @@ namespace RescueSystem.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+
         }
     }
 }

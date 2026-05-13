@@ -23,7 +23,7 @@ namespace RescueSystem.Application.Features.ChecklistItem.Commands.CreateCheckli
             };
 
             await _itemRepository.AddAsync(item);
-            await _itemRepository.SaveChangesAsync();
+            await _itemRepository.SaveChangesAsync(cancellationToken);
 
             return item.Id;
         }

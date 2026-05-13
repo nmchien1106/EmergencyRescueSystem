@@ -16,10 +16,12 @@ namespace RescueSystem.Domain.Entities
         // Navigation Properties
         public ICollection<RescueRequest> Requests { get; set; } = new List<RescueRequest>();
         public ICollection<Contact> Contacts { get; set; } = new List<Contact>();
-        public ICollection<RescueTeam> LeadingTeams { get; set; } = new List<RescueTeam>();
         public Guid? RescueTeamId { get; set; }
+
         public RescueTeam? MemberOfTeam { get; set; }
-        public ICollection<RescueTeam> TeamsAsMember { get; set; } = new List<RescueTeam>();
+
+        public ICollection<RescueTeam> LeadingTeams { get; set; }
+            = new List<RescueTeam>();
         public ICollection<Mission> DispatchedMissions { get; set; } = new List<Mission>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
     }

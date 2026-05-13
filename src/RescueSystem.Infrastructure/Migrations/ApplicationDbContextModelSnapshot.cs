@@ -726,9 +726,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("BaseLocationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -756,8 +753,6 @@ namespace RescueSystem.Infrastructure.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BaseLocationId");
 
@@ -826,6 +821,16 @@ namespace RescueSystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RescueSystem.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("RescueSystem.Domain.Entities.RescueTeam", "MemberOfTeam")
+                        .WithMany("Members")
+                        .HasForeignKey("RescueTeamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("MemberOfTeam");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
@@ -957,10 +962,6 @@ namespace RescueSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.RescueTeam", b =>
                 {
-                    b.HasOne("RescueSystem.Domain.Entities.ApplicationUser", null)
-                        .WithMany("TeamsAsMember")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("RescueSystem.Domain.Entities.Location", "BaseLocation")
                         .WithMany()
                         .HasForeignKey("BaseLocationId")
@@ -989,8 +990,6 @@ namespace RescueSystem.Infrastructure.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("Requests");
-
-                    b.Navigation("TeamsAsMember");
                 });
 
             modelBuilder.Entity("RescueSystem.Domain.Entities.Checklist", b =>
@@ -1001,6 +1000,8 @@ namespace RescueSystem.Infrastructure.Migrations
             modelBuilder.Entity("RescueSystem.Domain.Entities.Mission", b =>
                 {
                     b.Navigation("Checklists");
+
+                    b.Navigation("MissionHistories");
 
                     b.Navigation("Reports");
                 });

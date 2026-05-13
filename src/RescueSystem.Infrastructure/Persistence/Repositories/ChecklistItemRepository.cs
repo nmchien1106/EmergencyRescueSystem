@@ -37,10 +37,15 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             _context.ChecklistItems.Remove(item);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
-
+        public async Task<List<ChecklistItem>> GetByChecklistIdAsync(Guid checklistId)
+        {
+            return await _context.ChecklistItems
+                .Where(x => x.ChecklistId == checklistId)
+                .ToListAsync();
+        }
     }
 }

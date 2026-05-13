@@ -24,7 +24,9 @@ namespace RescueSystem.Application.Features.Checklist.Queries.GetAllChecklists
             {
                 Id = c.Id,
                 Title = c.Title,
-                MissionId = c.MissionId
+                MissionId = c.MissionId,
+                CreatedAt = c.CreatedAt,
+                UpdatedAt = c.UpdatedAt
             }).ToList();
         }
     }

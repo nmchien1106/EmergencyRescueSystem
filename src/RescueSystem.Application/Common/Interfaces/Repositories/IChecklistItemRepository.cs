@@ -11,6 +11,7 @@ namespace RescueSystem.Application.Common.Interfaces.Repositories
         Task<ChecklistItem?> GetByIdAsync(Guid id);
         void Update(ChecklistItem item);
         void Delete(ChecklistItem item);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
+        Task<List<ChecklistItem>> GetByChecklistIdAsync(Guid checklistId);
     }
 }
