@@ -8,6 +8,7 @@ using RescueSystem.Application.Common.Interfaces.Services;
 using RescueSystem.Application.DTOs.Auth;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Domain.Entities;
+using RescueSystem.Application.DTOs.Auth;
 
 namespace RescueSystem.Application.Features.Auth.Commands.Login
 {
@@ -37,10 +38,23 @@ namespace RescueSystem.Application.Features.Auth.Commands.Login
                 throw new BadRequestException("Invalid password or email! Please try again");
             }
 
-            var roles = await userRepository.GetUserRolesAsync(user);
 
+            var roles = await userRepository.GetUserRolesAsync(user);
             var token = tokenService.GenerateToken(user.Id.ToString(), user.Email, roles);
-            return new AuthResponse { AccessToken = token };
+            return new AuthResponse
+            {
+                AccessToken = token,
+                RefreshToken = null,           // sau này thêm refresh token service
+                ExpiresIn = 3600,
+                User = new AuthUserDTO
+                {
+                    Id = user.Id,
+                    Email = user.Email ?? string.Empty,
+                    FullName = user.FullName,
+                    PhoneNumber = user.PhoneNumber,
+                    Roles = roles,
+                },
+            };
         }
     }
 }
