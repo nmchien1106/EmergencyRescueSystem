@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 docs/
 appsettings.Development.json
+
+*.lscache
