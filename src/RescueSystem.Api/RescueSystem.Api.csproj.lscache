@@ -57,6 +57,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 [sourceFiles]
 Controllers/
  AuthController.cs
+ ChecklistController.cs
  LocationController.cs
  MissionController.cs
  RequestController.cs

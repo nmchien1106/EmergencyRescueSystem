@@ -4,11 +4,11 @@ using RescueSystem.Application.DTOs.RescueTeam;
 
 namespace RescueSystem.Application.Features.RescueTeam.Queries.GetMembersByTeamId
 {
-    public class GetMembersByTeamIdCommand : IRequestHandler<GetMembersByTeamIdQuery, List<RescueTeamMemberDTO>>
+    public class GetMembersByTeamIdHandler : IRequestHandler<GetMembersByTeamIdQuery, List<RescueTeamMemberDTO>>
     {
         private readonly IRescueTeamRepository _rescueTeamRepository;
 
-        public GetMembersByTeamIdCommand(IRescueTeamRepository rescueTeamRepository)
+        public GetMembersByTeamIdHandler(IRescueTeamRepository rescueTeamRepository)
         {
             _rescueTeamRepository = rescueTeamRepository;
         }

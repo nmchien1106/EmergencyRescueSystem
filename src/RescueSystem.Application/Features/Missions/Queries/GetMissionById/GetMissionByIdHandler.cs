@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Dispatcher;
 using RescueSystem.Application.DTOs.Mission;
@@ -18,7 +19,7 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
             var mission = await missionRepository.GetByIdAsync(request.Id);
             if (mission == null)
             {
-                throw new Exception("Mission not found");
+                throw new NotFoundException("Không tìm thấy nhiệm vụ");
             }
 
             return new MissionDetailDTO
@@ -30,8 +31,12 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
                     Id = mission.Request.Id,
                     Description = mission.Request.Description,
                     EmergencyType = mission.Request.EmergencyType,
-                    Priority = mission.Request.Priority
+                    Priority = mission.Request.Priority,
+                    Status = mission.Request.Status,
+                    Location = mission.Request.Location,  // quan trọng
+                    RequestedBy = null,//TODO: CHeck
                 },
+                
 
                 RescueTeam = mission.RescueTeam == null ? null : new RescueTeamDTO
                 {
@@ -46,6 +51,7 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
                     Name = mission.Dispatcher.FullName,
                     Email = mission.Dispatcher.Email
                 },
+                Status = mission.Status.ToString(),
                 StartTime = mission.StartTime.AddHours(7),
                 EndTime = mission.EndTime.HasValue ? mission.EndTime.Value.AddHours(7) : null,
                 CreateAt = mission.CreatedAt.AddHours(7),

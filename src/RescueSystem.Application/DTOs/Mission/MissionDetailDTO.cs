@@ -15,7 +15,7 @@ namespace RescueSystem.Application.DTOs.Mission
         public RequestDTO? Request { get; set; }
         public RescueTeamDTO? RescueTeam { get; set; }
         public DispatcherDTO? Dispatcher { get; set; }
-
+        public string Status { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime CreateAt { get; set; }

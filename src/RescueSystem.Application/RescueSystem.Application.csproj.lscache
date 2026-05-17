@@ -66,6 +66,8 @@ Common/
   UnauthorizedException.cs
  ExternalSettings/CloudinarySetting.cs
  Interfaces/Repositories/
+  IChecklistItemRepository.cs
+  IChecklistRepository.cs
   IContactRepository.cs
   ILocationRepository.cs
   IMissionRepository.cs
@@ -89,6 +91,10 @@ DTOs/
   ProfileResponse.cs
  Avatar/AvatarDTO.cs
  Base/BaseDTO.cs
+ Checklist/
+  ChecklistDetailDTO.cs
+  ChecklistDTO.cs
+  ChecklistItemDTO.cs
  Common/PagedResult.cs
  Contact/ContactDTO.cs
  Dispatcher/DispatcherDTO.cs
@@ -137,6 +143,40 @@ Features/Auth/Queries/Profile/
  ProfileHandler.cs
  ProfileQuery.cs
  ProfileValidator.cs
+Features/Checklist/Commands/CreateChecklist/
+ CreateChecklistCommand.cs
+ CreateChecklistHandler.cs
+ CreateChecklistValidator.cs
+Features/Checklist/Commands/DeleteChecklist/
+ DeleteChecklistCommand.cs
+ DeleteChecklistHandler.cs
+Features/Checklist/Commands/UpdateChecklist/
+ UpdateChecklistCommand.cs
+ UpdateChecklistHandler.cs
+ UpdateChecklistValidator.cs
+Features/Checklist/Queries/GetAllChecklists/
+ GetAllChecklistsHandler.cs
+ GetAllChecklistsQuery.cs
+Features/Checklist/Queries/GetChecklistDetail/
+ GetChecklistDetailHandler.cs
+ GetChecklistDetailQuery.cs
+Features/ChecklistItem/Commands/CreateChecklistItem/
+ CreateChecklistItemCommand.cs
+ CreateChecklistItemHandler.cs
+ CreateChecklistItemValidator.cs
+Features/ChecklistItem/Commands/DeleteChecklistItem/
+ DeleteChecklistItemCommand.cs
+ DeleteChecklistItemHandler.cs
+Features/ChecklistItem/Commands/UpdateChecklistItem/
+ UpdateChecklistItemCommand.cs
+ UpdateChecklistItemHandler.cs
+ UpdateChecklistItemValidator.cs
+Features/ChecklistItem/Queries/GetChecklistItemById/
+ GetChecklistItemByIdHandler.cs
+ GetChecklistItemByIdQuery.cs
+Features/ChecklistItem/Queries/GetChecklistItems/
+ GetChecklistItemsHandler.cs
+ GetChecklistItemsQuery.cs
 Features/Contact/Commands/CreateContact/
  CreateContactCommand.cs
  CreateContactHandler.cs
@@ -199,6 +239,10 @@ Features/Missions/Queries/GetMissionsPagination/
  GetMissionsPaginationHandler.cs
  GetMissionsPaginationQuery.cs
  GetMissionsPaginationValidator.cs
+Features/Request/Commands/ChangeRequestStatus/
+ ChangeRequestStatusCommand.cs
+ ChangeRequestStatusHandler.cs
+ ChangeRequestStatusValidator.cs
 Features/Request/Commands/CreateRequest/
  CreateRequestCommand.cs
  CreateRequestHandler.cs

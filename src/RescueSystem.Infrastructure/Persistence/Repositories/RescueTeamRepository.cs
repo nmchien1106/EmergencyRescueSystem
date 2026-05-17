@@ -48,6 +48,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
             }
 
             team.Members.Remove(member);
+            member.RescueTeamId = null;
             team.UpdatedAt = DateTime.UtcNow;
             return await _context.SaveChangesAsync() > 0;
         }

@@ -64,8 +64,12 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
         public async Task<Mission?> GetByIdAsync(Guid id)
         {
-            return await _context.Missions
+
+                return await _context.Missions
                 .Include(x => x.Request)
+                    .ThenInclude(r => r!.Location)
+                .Include(x => x.Request)
+                    .ThenInclude(r => r!.RequestedBy)   
                 .Include(x => x.Dispatcher)
                 .Include(x => x.RescueTeam)
                 .FirstOrDefaultAsync(x => x.Id == id);

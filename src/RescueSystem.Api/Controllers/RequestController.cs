@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RescueSystem.Application.Common.Response;
 using RescueSystem.Application.DTOs.Request;
+using RescueSystem.Application.Features.Request.Commands.ChangeRequestStatus;
 using RescueSystem.Application.Features.Request.Commands.CreateRequest;
 using RescueSystem.Application.Features.Request.Commands.DeleteRequest;
 using RescueSystem.Application.Features.Request.Commands.UpdateRequest;
@@ -90,6 +92,18 @@ namespace RescueSystem.Api.Controllers
                 message: "Xóa yêu cầu cứu hộ thành công",
                 statusCode: 200
             ));
+        }
+
+        //Edited by Dieu 9:35 16/05/2026
+        //PUT api/requests/{id}/status - Change status of a rescue request
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Dispatcher,Commander")]
+        public async Task<IActionResult> ChangeRequestStatus(Guid id, [FromBody] ChangeRequestStatusCommand command)
+        {
+            command.RequestId = id;
+            var result = await mediator.Send(command);
+
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Cập nhật trạng thái yêu cầu cứu hộ thành công", 200));
         }
     }
 }

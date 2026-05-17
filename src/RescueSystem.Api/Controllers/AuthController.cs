@@ -10,6 +10,7 @@ using RescueSystem.Application.Common.Response;
 using RescueSystem.Application.DTOs.Auth;
 using RescueSystem.Application.Features.Auth.Commands.ForgotPassword;
 using RescueSystem.Application.Features.Auth.Commands.Login;
+using RescueSystem.Application.Features.Auth.Commands.RefreshToken;
 using RescueSystem.Application.Features.Auth.Commands.Register;
 using RescueSystem.Application.Features.Auth.Commands.ResetPassword;
 using RescueSystem.Application.Features.Auth.Commands.UpdateAvatar;
@@ -271,5 +272,23 @@ namespace RescueSystem.Api.Controllers
                 data = result
             });
         }
+
+        //Edit: Dieu, 17/05/2026 Them refreshToken
+        [HttpPost("refresh")]
+        [SwaggerOperation(Summary = "Làm mới access token")]
+        public async Task<ActionResult<object>> Refresh([FromBody] RefreshTokenCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return ApiResponse<AuthResponse>.SuccessResponse(result, "Làm mới token thành công");
+        }
+
+        //TODO: Them Logout
+        // [HttpPost("logout")]
+        // [Authorize]
+        // public async Task<ActionResult<object>> Logout([FromBody] LogoutCommand command)
+        // {
+        //     await _mediator.Send(command);
+        //     return ApiResponse<object>.SuccessResponse(null, "Đăng xuất thành công");
+        // }
     }
 }

@@ -56,32 +56,12 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 [sourceFiles]
 DependencyInjection.cs
 Migrations/
- 20260427153843_init1.cs
- 20260427153843_init1.Designer.cs
- 20260428082607_mission.cs
- 20260428082607_mission.Designer.cs
- 20260428084746_defaultId.cs
- 20260428084746_defaultId.Designer.cs
- 20260429064536_fix-media.cs
- 20260429064536_fix-media.Designer.cs
- 20260503135001_AddOtpCode.cs
- 20260503135001_AddOtpCode.Designer.cs
- 20260503145336_OTPCode.cs
- 20260503145336_OTPCode.Designer.cs
- 20260504083713_fix-media1.cs
- 20260504083713_fix-media1.Designer.cs
- 20260505164104_user-contact-address.cs
- 20260505164104_user-contact-address.Designer.cs
- 20260508153557_SyncModelChanges.cs
- 20260508153557_SyncModelChanges.Designer.cs
  20260511030922_UserSingleTeamMembership.cs
  20260511030922_UserSingleTeamMembership.Designer.cs
- 20260511043249_rescue-team.cs
- 20260511043249_rescue-team.Designer.cs
- 20260511045538_fix.cs
- 20260511045538_fix.Designer.cs
- 20260511054836_AddRescueTeamIdToUsers.cs
- 20260511054836_AddRescueTeamIdToUsers.Designer.cs
+ 20260513090655_init1.cs
+ 20260513090655_init1.Designer.cs
+ 20260513090846_init2.cs
+ 20260513090846_init2.Designer.cs
  ApplicationDbContextModelSnapshot.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
@@ -91,6 +71,8 @@ Persistence/
  ApplicationDbContext.cs
  Configurations/
   AddressConfiguration.cs
+  ChecklistConfiguration.cs
+  ChecklistItemConfiguration.cs
   ContactConfiguration.cs
   LocationConfiguration.cs
   MissionConfiguration.cs
@@ -102,6 +84,8 @@ Persistence/
   RoleConfiguration.cs
   UserConfiguration.cs
  Repositories/
+  ChecklistItemRepository.cs
+  ChecklistRepository.cs
   ContactRepository.cs
   LocationRepository.cs
   MissionRepository.cs

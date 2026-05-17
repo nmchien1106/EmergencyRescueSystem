@@ -5,7 +5,7 @@ namespace RescueSystem.Domain.Entities
     public class ApplicationUser : IdentityUser<Guid>
     {
         public string FullName { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        public new string PhoneNumber { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Avatar { get; set; } = string.Empty;

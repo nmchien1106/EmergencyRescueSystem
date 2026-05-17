@@ -364,4 +364,5 @@ FodyWeavers.xsd
 docs/
 appsettings.Development.json
 
-*.lscache
+*.lscachegit add .gitignore
+git commit -m "chore: add csproj.lscache to gitignore"
