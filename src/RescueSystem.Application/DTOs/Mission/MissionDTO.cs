@@ -1,23 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RescueSystem.Application.DTOs.RescueTeam;
+using RescueSystem.Application.DTOs.User;
+using RescueSystem.Domain.Enums;
 
 namespace RescueSystem.Application.DTOs.Mission
 {
+
+    //EDIT:DIEU 18/05/2026 Chuẩn hóa lại DTO cho Mision
     public class MissionDTO
     {
         public Guid Id { get; set; }
         public Guid RequestId { get; set; }
         public string? Description { get; set; }
-        public Guid DispatcherId { get; set; }
-        public string? DispatcherName { get; set; }
-        public Guid RescueTeamId { get; set; }
-        public string? TeamName { get; set; }
+        
+        // FIXED: Use nested UserDTO instead of flat properties
+        public UserDTO? Dispatcher { get; set; }
+        
+        // FIXED: Use nested RescueTeamDTO instead of flat properties
+        public RescueTeamDTO? RescueTeam { get; set; }
+        
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime UpdateAt { get; set; }
-        public string Status { get; set; }
+        
+        // FIXED: Use enum instead of string
+        public MissionStatus Status { get; set; }
     }
 }
 

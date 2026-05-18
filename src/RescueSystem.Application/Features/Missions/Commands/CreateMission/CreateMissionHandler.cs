@@ -14,9 +14,13 @@ namespace RescueSystem.Application.Features.Missions.Commands.CreateMission
     public class CreateMissionHandler : IRequestHandler<CreateMissionCommand, Guid>
     {
         private readonly IMissionRepository _missionRepository;
-        public CreateMissionHandler(IMissionRepository missionRepository)
+        //FIXED: DIEU 18/05/2026 - Thêm repository để thay đổi trạng thái của Rescuer khi mà gán nhiệm vụ 
+        private readonly IRescueTeamRepository _rescueTeamRepository; // FIXED: Added
+
+        public CreateMissionHandler(IMissionRepository missionRepository, IRescueTeamRepository rescueTeamRepository)
         {
             _missionRepository = missionRepository;
+            _rescueTeamRepository = rescueTeamRepository;
         }
         public async Task<Guid> Handle(CreateMissionCommand request, CancellationToken cancellationToken)
         {
@@ -50,6 +54,13 @@ namespace RescueSystem.Application.Features.Missions.Commands.CreateMission
             };
 
             var res = await _missionRepository.AddAsync(mission);
+            var team = await _rescueTeamRepository.GetByIdAsync(request.RescueTeamId);
+            if (team != null)
+            {
+                team.Status = TeamStatus.ON_MISSION;
+                team.UpdatedAt = DateTime.UtcNow.AddHours(7);
+                await _rescueTeamRepository.UpdateTeamStatusAsync(team.Id, TeamStatus.ON_MISSION);
+            }
 
             return mission.Id;
         }

@@ -25,6 +25,9 @@ public class MappingProfile : Profile
         // Mission mappings
         CreateMap<MissionHistory, MissionHistoryDTO>();
 
+        CreateMap<Mission, RequestDTO.MissionBriefDto>()
+            .ForMember(dest => dest.TeamName, opt => opt.MapFrom(src => src.RescueTeam != null ? src.RescueTeam.TeamName : string.Empty));
+
         CreateMap<RescueTeam, RescueTeamDTO>();
     }
 }

@@ -1,6 +1,8 @@
 using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Mission;
+using RescueSystem.Application.DTOs.RescueTeam;
+using RescueSystem.Application.DTOs.User;
 
 namespace RescueSystem.Application.Features.RescueTeam.Queries.GetMissionsByTeamId {
     public class GetMissionsByTeamIdHandler : IRequestHandler<GetMissionsByTeamIdQuery, List<MissionDTO>>
@@ -19,15 +21,22 @@ namespace RescueSystem.Application.Features.RescueTeam.Queries.GetMissionsByTeam
                 Id = m.Id,
                 RequestId = m.RequestId,
                 Description = m.Request?.Description,
-                DispatcherId = m.DispatcherId,
-                DispatcherName = m.Dispatcher?.FullName,
-                RescueTeamId = m.RescueTeamId,
-                TeamName = m.RescueTeam?.TeamName,
+                Dispatcher = new UserDTO
+                    {
+                        Id = m.DispatcherId,
+                        FullName = m.Dispatcher != null ? m.Dispatcher.FullName : null,
+                    },
+                    
+                    RescueTeam = new RescueTeamDTO
+                    {
+                        Id = m.RescueTeamId,
+                        TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null,
+                    },
                 StartTime = m.StartTime.AddHours(7),
                 EndTime = m.EndTime.HasValue ? m.EndTime.Value.AddHours(7) : null,
                 CreateAt = m.CreatedAt.AddHours(7),
                 UpdateAt = m.UpdatedAt.AddHours(7),
-                Status = m.Status.ToString()
+                Status = m.Status
             }).ToList();
         }
     }

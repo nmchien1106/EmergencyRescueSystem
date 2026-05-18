@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Persistence;
@@ -92,12 +93,12 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
         public async Task<Address?> GetAddressByUserIdAsync(Guid userId)
         {
-            return await _context.Addresses.FirstOrDefaultAsync(a => a.UserId == userId);
+            return await _context.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
         public async Task UpsertAddressAsync(Address address)
         {
-            var existing = await _context.Addresses.FirstOrDefaultAsync(a => a.UserId == address.UserId);
+            var existing = await _context.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == address.UserId);
             if (existing == null)
             {
                 await _context.Addresses.AddAsync(address);
@@ -128,7 +129,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         // get user by profile id
         public async Task<ApplicationUser?> GetUserProfileByIdAsync(Guid userId)
         {
-            return await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            return await _userManager.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         // check isEmailConfirmed
@@ -150,6 +151,47 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
             if (!result.Succeeded)
                 throw new Exception("Reset password failed");
+        }
+
+        public async Task UpdateUserRolesAsync(Guid userId, IList<string> newRoles)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new NotFoundException("Không tìm thấy người dùng để cập nhật quyền.");
+            }
+
+            if (newRoles == null || !newRoles.Any())
+            {
+                newRoles = new List<string> { "Citizen" };
+            }
+
+            // 2. Lấy danh sách Roles hiện tại trong Database
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            var rolesToRemove = currentRoles.Except(newRoles).ToList(); 
+            var rolesToAdd = newRoles.Except(currentRoles).ToList();   
+
+            if (rolesToRemove.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+            }
+
+            if (rolesToAdd.Any())
+            {
+                await _userManager.AddToRolesAsync(user, rolesToAdd); 
+            }
+        }
+
+        public async Task<IList<string>> GetUserRolesAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new List<string>(); 
+            }
+        
+            return await _userManager.GetRolesAsync(user); 
         }
     }
 }

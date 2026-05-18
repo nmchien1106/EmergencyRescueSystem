@@ -274,6 +274,7 @@ namespace RescueSystem.Api.Controllers
         }
 
         //Edit: Dieu, 17/05/2026 Them refreshToken
+        // post api/auth/refresh
         [HttpPost("refresh")]
         [SwaggerOperation(Summary = "Làm mới access token")]
         public async Task<ActionResult<object>> Refresh([FromBody] RefreshTokenCommand command)

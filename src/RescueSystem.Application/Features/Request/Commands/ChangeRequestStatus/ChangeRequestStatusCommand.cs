@@ -7,5 +7,6 @@ namespace RescueSystem.Application.Features.Request.Commands.ChangeRequestStatus
     {
         public Guid RequestId { get; set; }
         public RequestStatus NewStatus { get; set; }
+        public string Note { get; set; } = string.Empty;
     }
 }

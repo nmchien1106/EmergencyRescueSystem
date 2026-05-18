@@ -13,6 +13,8 @@ namespace RescueSystem.Application.Features.Request.Commands.CreateRequest
     {
         public Guid? UserId { get; set; }
         public EmergencyType EmergencyType { get; set; }
+        //EDIT: Dieu 17/05/2026: Them Priority
+        public Priority Priority { get; set; } = Priority.MEDIUM;
         public RequestStatus Status { get; set; } = RequestStatus.PENDING;
         public Guid LocationId { get; set; }
         public string Description { get; set; } = string.Empty;

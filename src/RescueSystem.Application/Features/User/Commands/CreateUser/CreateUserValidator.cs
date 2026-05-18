@@ -37,10 +37,11 @@ namespace RescueSystem.Application.Features.User.Commands.CreateUser
                 .MaximumLength(100).WithMessage("Password must not exceed 100 characters.")
                 .Matches(@"(?=.*[A-Za-z])(?=.*\d)").WithMessage("Password must contain letters and numbers.");
 
-            RuleFor(x => x.Roles)
-                .NotNull().WithMessage("Roles must be provided.")
-                .Must(r => r.Any()).WithMessage("At least one role must be specified.")
-                .ForEach(r => r.NotEmpty().WithMessage("Role value must not be empty."));
+            //NOTE ? DIEU: 18/05/2026: Khoi tao neu vao check nhu the nay thi neu khong co role thi khong tao duoc thi chet
+            // RuleFor(x => x.Roles)
+            //     .NotNull().WithMessage("Roles must be provided.")
+            //     .Must(r => r.Any()).WithMessage("At least one role must be specified.")
+            //     .ForEach(r => r.NotEmpty().WithMessage("Role value must not be empty."));
 
             RuleFor(x => x.Address)
                 .MaximumLength(500).WithMessage("Address must not exceed 500 characters.")

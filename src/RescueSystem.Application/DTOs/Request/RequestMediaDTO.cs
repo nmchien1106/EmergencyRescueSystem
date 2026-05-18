@@ -9,7 +9,10 @@ namespace RescueSystem.Application.DTOs.Request
     {
         public Guid Id { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public string SescueUrl { get; set; } = string.Empty;
+
+        //TODO: Dieu 17/05/2026: Them transferUrl de client co the lay
+        [System.Text.Json.Serialization.JsonPropertyName("mediaUrl")]
+        public string SecureUrl { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
         public MediaType ResourceType { get; set; } = MediaType.Image;
     }

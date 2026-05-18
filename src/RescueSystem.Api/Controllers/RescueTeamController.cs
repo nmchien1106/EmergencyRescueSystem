@@ -39,7 +39,7 @@ namespace RescueSystem.Api.Controllers
         }
         // GET: api/RescueTeam/{id}
         [HttpGet("{teamId}")]
-        [Authorize(Roles = "Dispatcher,RescuerLeader,Rescuer")]
+        [Authorize(Roles = "Dispatcher,RescuerLeader,Rescuer,Commander")]
         [SwaggerOperation(
             Summary = "Get rescue team by id",
             Description = "Lấy một đội cứu hộ theo Id"

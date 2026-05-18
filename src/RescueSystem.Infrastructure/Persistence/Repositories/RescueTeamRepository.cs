@@ -108,8 +108,15 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
 
         public async Task<bool> DeleteAsync(RescueTeam rescueTeam)
         {
+            var members = await _context.Users.Where(u => u.RescueTeamId == rescueTeam.Id).ToListAsync();
+            foreach(var member in members)
+            {
+                member.RescueTeamId = null; // Gỡ thành viên khỏi đội
+            }
             _context.RescueTeams.Remove(rescueTeam);
-            return await _context.SaveChangesAsync() > 0;
+            
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
         }
 
         public async Task<List<Mission>> GetMissionsByTeamIdAsync(Guid teamId)

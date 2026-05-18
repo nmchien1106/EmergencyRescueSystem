@@ -22,9 +22,15 @@ namespace RescueSystem.Application.Features.Request.Commands.ChangeRequestStatus
             {
                 throw new NotFoundException("Không tìm thấy yêu cầu cứu hộ");
             }
-
+            var previousStatus = existingRequest.Status;
             existingRequest.Status = request.NewStatus;
             existingRequest.UpdatedAt = DateTime.UtcNow;
+
+            if (!string.IsNullOrEmpty(request.Note))
+            {
+                existingRequest.Description += $" [Status Change: {previousStatus} → {request.NewStatus}. Note: {request.Note}]";
+            }
+            
             await _requestRepository.UpdateAsync(existingRequest);
             return true;
         }

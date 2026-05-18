@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.Common.Models;
 using RescueSystem.Application.DTOs.Mission;
+using RescueSystem.Application.DTOs.RescueTeam;
+using RescueSystem.Application.DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -49,15 +51,23 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionsPaginati
                     Id = m.Id,
                     RequestId = m.RequestId,
                     Description = m.Request != null ? m.Request.Description : null,
-                    DispatcherId = m.DispatcherId,
-                    DispatcherName = m.Dispatcher != null ? m.Dispatcher.FullName : null,
-                    RescueTeamId = m.RescueTeamId,
-                    TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null,
+
+                    Dispatcher = new UserDTO
+                    {
+                        Id = m.DispatcherId,
+                        FullName = m.Dispatcher != null ? m.Dispatcher.FullName : null,
+                    },
+                    
+                    RescueTeam = new RescueTeamDTO
+                    {
+                        Id = m.RescueTeamId,
+                        TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null,
+                    },
                     StartTime = m.StartTime.AddHours(7),
                     EndTime = m.EndTime.HasValue ? m.EndTime.Value.AddHours(7) : null,
                     CreateAt = m.CreatedAt.AddHours(7),
                     UpdateAt = m.UpdatedAt.AddHours(7),
-                    Status = m.Status.ToString()
+                    Status = m.Status
                 })
                 .ToListAsync(cancellationToken);
             return new PagedResult<MissionDTO>

@@ -6,9 +6,9 @@ namespace RescueSystem.Application.DTOs.Address
 {
     public class AddressDTO
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
+        public string Street { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string District { get; set; } = string.Empty;
         public string GPS { get; set; }
     }
 }

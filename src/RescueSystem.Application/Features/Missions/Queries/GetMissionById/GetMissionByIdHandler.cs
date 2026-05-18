@@ -2,6 +2,7 @@
 using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Dispatcher;
+using RescueSystem.Application.DTOs.Location;
 using RescueSystem.Application.DTOs.Mission;
 using RescueSystem.Application.DTOs.Request;
 using RescueSystem.Application.DTOs.RescueTeam;
@@ -33,7 +34,14 @@ namespace RescueSystem.Application.Features.Missions.Queries.GetMissionById
                     EmergencyType = mission.Request.EmergencyType,
                     Priority = mission.Request.Priority,
                     Status = mission.Request.Status,
-                    Location = mission.Request.Location,  // quan trọng
+                    Location = mission.Request.Location != null ? new LocationDTO 
+                    {
+                        Id = mission.Request.Location.Id,
+                        Latitude = mission.Request.Location.Latitude,
+                        Longitude = mission.Request.Location.Longitude,
+                        Address = mission.Request.Location.Address,
+                        Landmark = mission.Request.Location.Landmark
+                    } : null, // quan trọng
                     RequestedBy = null,//TODO: CHeck
                 },
                 

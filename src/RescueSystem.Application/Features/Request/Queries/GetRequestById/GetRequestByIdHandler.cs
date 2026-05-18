@@ -5,6 +5,7 @@ using AutoMapper;
 using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.Request;
+using static RescueSystem.Application.DTOs.Request.RequestDTO;
 
 namespace RescueSystem.Application.Features.Request.Queries.GetRequestById
 {
@@ -27,6 +28,15 @@ namespace RescueSystem.Application.Features.Request.Queries.GetRequestById
             }
 
             var result = _mapper.Map<RequestDTO>(requestEntity);
+            result.Missions = requestEntity.Missions.Select(m => new MissionBriefDto
+            {
+                Id = m.Id,
+                Status = m.Status,
+                RescueTeamId = m.RescueTeamId,
+                TeamName = m.RescueTeam?.TeamName,
+                StartTime = m.StartTime,
+                EndTime = m.EndTime,
+            }).ToList();
             return result;
         }
     }

@@ -89,6 +89,8 @@ namespace RescueSystem.Api.Controllers
             );
         }
 
+        
+
         // PUT api/missions/{id}/status
         // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/status")]
@@ -99,6 +101,7 @@ namespace RescueSystem.Api.Controllers
         public async Task<ActionResult<object>> UpdateMissionStatus(Guid id, UpdateMissionCommand command)
         {
             command.MissionId = id;
+            
             var res = await mediator.Send(command);
 
             if (!res)
@@ -117,6 +120,13 @@ namespace RescueSystem.Api.Controllers
 
         // PUT api/missions/{id}/finish
         //Note: Nên chuyển thành RescuerLeader
+        //EDIT: DIEU 17/05/2026: Thêm 2 thuộc tính là userId và note
+        private Guid? GetCurrentUserId()
+        {
+            var id = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            return Guid.TryParse(id, out var guid) ? guid : null;
+        }
+
         [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/finish")]
         [SwaggerOperation(
@@ -127,7 +137,9 @@ namespace RescueSystem.Api.Controllers
         {
             var command = new FinishMissionCommand
             {
-                MissionId = id
+                MissionId = id,
+                ChangedById = GetCurrentUserId() ?? Guid.Empty,
+                Note="Hoàn thành nhiệm vụ"
             };
 
             var res = await mediator.Send(command);
@@ -145,7 +157,7 @@ namespace RescueSystem.Api.Controllers
                 )
             );
         }
-
+        
         // PUT api/missions/{id}/abort
         // [Authorize(Roles = "Rescuer,Dispatcher")]
         [HttpPut("{id}/abort")]
@@ -196,6 +208,8 @@ namespace RescueSystem.Api.Controllers
                     )
                 );
             }
+
+            
         }
     }
 

@@ -17,11 +17,16 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
         public async Task<Contact?> GetByIdAsync(Guid id)
         {
-            return await _context.Contacts.FirstOrDefaultAsync(x => x.Id == id);
+            //EDIT: DIEU 18/05/2026 - Thêm AsNoTracking để tránh tracking entity khi chỉ cần đọc dữ liệu
+            return await _context.Contacts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<List<Contact>> GetByUserIdAsync(Guid userId)
         {
+            //EDIT: DIEU 18/05/2026 - Thêm AsNoTracking để tránh tracking entity khi chỉ cần đọc dữ liệu
             return await _context.Contacts
+                .AsNoTracking()
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
         }

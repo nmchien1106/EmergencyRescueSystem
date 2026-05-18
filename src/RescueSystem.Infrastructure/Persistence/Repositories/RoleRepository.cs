@@ -19,7 +19,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
 
         public async Task<List<ApplicationRole>> GetAllAsync()
         {
-            return await _roleManager.Roles.ToListAsync();
+            return await _roleManager.Roles.AsNoTracking().ToListAsync();
         }
 
         public async Task<ApplicationRole?> GetByIdAsync(Guid id)

@@ -67,6 +67,7 @@ namespace RescueSystem.Application.Features.Request.Commands.CreateRequest
                 Id = RequestId,
                 UserId = request.UserId,
                 EmergencyType = request.EmergencyType,
+                Priority = request.Priority,
                 Status = request.Status,
                 LocationId = request.LocationId,
                 Description = request.Description,

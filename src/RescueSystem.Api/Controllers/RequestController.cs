@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,11 @@ namespace RescueSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRequest([FromForm] CreateRequestCommand command)
         {
+            var userIdClaim = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userIdClaim))
+            {
+                command.UserId = Guid.Parse(userIdClaim);
+            }
             var result = await mediator.Send(command);
             return StatusCode(201, ApiResponse<object>.SuccessResponse(
                 data: new

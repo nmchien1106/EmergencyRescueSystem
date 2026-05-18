@@ -21,23 +21,35 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         // Lấy 
         public Task<List<RescueRequest>> GetAllAsync()
         {
-            return _context.Requests.ToListAsync();
+            return _context.Requests
+                .AsNoTracking()
+                .ToListAsync();
         }
         public Task<RescueRequest?> GetByIdAsync(Guid id)
         {
+            
             return _context.Requests
-                        .Include(r => r.Medias)
-                        .Include(r => r.RequestedBy)
-                        .Include(r => r.Location)
-                        .FirstOrDefaultAsync(r => r.Id == id);
+                .AsNoTracking()
+                .Include(r => r.Medias)
+                .Include(r => r.RequestedBy)
+                .Include(r => r.Location)
+                .Include(r => r.Missions)
+                    .ThenInclude(m => m.RescueTeam)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
         public Task<List<RescueRequest>> GetByUserIdAsync(Guid userId)
         {
-            return _context.Requests.Where(r => r.UserId == userId).ToListAsync();
+            return _context.Requests
+                .AsNoTracking()
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
         }
         public Task<List<RescueRequest>> GetByStatusAsync(RequestStatus status)
         {
-            return _context.Requests.Where(r => r.Status == status).ToListAsync();
+            return _context.Requests
+                .AsNoTracking()
+                .Where(r => r.Status == status)
+                .ToListAsync();
         }
 
         public async Task<PagedResult<RescueRequest>> GetPagedAsync(int page, int pageSize, RequestStatus? status = null, Priority? priority = null, EmergencyType? emergencyType = null, string? sortBy = null)
@@ -46,6 +58,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             pageSize = pageSize < 1 ? 10 : pageSize;
 
             var query = _context.Requests
+                .AsNoTracking()
                 .Include(r => r.Medias)
                 .Include(r => r.RequestedBy)
                 .Include(r => r.Location)

@@ -15,12 +15,14 @@ internal class RefreshTokenRepository : IRefreshTokenRepository
 
     public Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken = default)
         => _context.RefreshTokens
+            .AsNoTracking()
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.TokenHash == tokenHash, cancellationToken);
 
     public async Task RevokeAllForUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var tokens = await _context.RefreshTokens
+            .AsNoTracking()
             .Where(t => t.UserId == userId && t.RevokedAt == null)
             .ToListAsync(cancellationToken);
 

@@ -17,6 +17,5 @@ namespace RescueSystem.Application.Common.Interfaces.Repositories
         Task<bool> UpdateTeamStatusAsync(Guid teamId, TeamStatus newStatus);
         // Task<bool> UpdateAsync(RescueTeam rescueTeam);
         Task<bool> DeleteAsync(RescueTeam rescueTeam);
-
     }
 }
