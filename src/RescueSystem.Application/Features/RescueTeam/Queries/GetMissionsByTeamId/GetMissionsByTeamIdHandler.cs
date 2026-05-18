@@ -21,17 +21,18 @@ namespace RescueSystem.Application.Features.RescueTeam.Queries.GetMissionsByTeam
                 Id = m.Id,
                 RequestId = m.RequestId,
                 Description = m.Request?.Description,
-                Dispatcher = new UserDTO
+                Dispatcher = m.Dispatcher != null? new UserDTO
                     {
                         Id = m.DispatcherId,
-                        FullName = m.Dispatcher != null ? m.Dispatcher.FullName : null,
-                    },
+                        FullName = m.Dispatcher.FullName
+                    }:null,
                     
-                    RescueTeam = new RescueTeamDTO
+                RescueTeam = m.RescueTeam != null? new RescueTeamDTO
                     {
-                        Id = m.RescueTeamId,
-                        TeamName = m.RescueTeam != null ? m.RescueTeam.TeamName : null,
-                    },
+                        Id = m.RescueTeam.Id,
+                        TeamName = m.RescueTeam.TeamName,
+                        Status = m.RescueTeam.Status.ToString()
+                    }:null,    
                 StartTime = m.StartTime.AddHours(7),
                 EndTime = m.EndTime.HasValue ? m.EndTime.Value.AddHours(7) : null,
                 CreateAt = m.CreatedAt.AddHours(7),

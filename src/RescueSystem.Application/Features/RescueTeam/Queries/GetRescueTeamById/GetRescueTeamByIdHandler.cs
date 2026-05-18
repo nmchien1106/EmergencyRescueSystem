@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using RescueSystem.Application.Common.Exception;
 using RescueSystem.Application.Common.Interfaces.Repositories;
@@ -7,10 +8,12 @@ namespace RescueSystem.Application.Features.RescueTeam.Queries.GetRescueTeamById
     public class GetRescueTeamByIdHandler : IRequestHandler<GetRescueTeamByIdQuery, RescueTeamDTO>
     {
         private readonly IRescueTeamRepository _rescueTeamRepository;
+        private readonly IMapper _mapper;
 
-        public GetRescueTeamByIdHandler(IRescueTeamRepository rescueTeamRepository)
+        public GetRescueTeamByIdHandler(IRescueTeamRepository rescueTeamRepository, IMapper mapper)
         {
             _rescueTeamRepository = rescueTeamRepository;
+            _mapper = mapper;
         }
 
         public async Task<RescueTeamDTO> Handle(GetRescueTeamByIdQuery request, CancellationToken cancellationToken)
@@ -20,12 +23,7 @@ namespace RescueSystem.Application.Features.RescueTeam.Queries.GetRescueTeamById
             {
                 throw new NotFoundException("Rescue team not found");
             }
-            return new RescueTeamDTO
-            {
-                Id = team.Id,
-                TeamName = team.TeamName,
-                Status = team.Status.ToString()
-            };
+            return _mapper.Map<RescueTeamDTO>(team);        
         }
     }
 }

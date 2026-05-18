@@ -1,4 +1,5 @@
 
+using AutoMapper;
 using MediatR;
 using RescueSystem.Application.Common.Interfaces.Repositories;
 using RescueSystem.Application.DTOs.RescueTeam;
@@ -9,20 +10,17 @@ namespace RescueSystem.Application.Features.RescueTeam.Queries.GetAllRescueTeams
     {
         
         private readonly IRescueTeamRepository _rescueTeamRepository;
-        public GetAllRescueTeamsHandler(IRescueTeamRepository rescueTeamRepository)
+        private readonly IMapper _mapper;
+        public GetAllRescueTeamsHandler(IRescueTeamRepository rescueTeamRepository, IMapper mapper )
         {
             _rescueTeamRepository = rescueTeamRepository;
+            _mapper = mapper;
         }
         
         public async Task<List<RescueTeamDTO>> Handle(GetAllRescueTeamsQuery request, CancellationToken cancellationToken)
         {
             var rescueTeams = await _rescueTeamRepository.GetAllAsync();
-            return rescueTeams.Select(x => new RescueTeamDTO
-            {
-                Id = x.Id,
-                TeamName = x.TeamName,
-                Status = x.Status.ToString()
-            }).ToList();
+            return _mapper.Map<List<RescueTeamDTO>>(rescueTeams);
         }
     }
 }

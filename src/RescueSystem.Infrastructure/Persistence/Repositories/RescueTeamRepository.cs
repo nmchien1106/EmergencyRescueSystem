@@ -23,6 +23,9 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
         {
             return await _context.RescueTeams
                 .AsNoTracking()
+                .Include(t => t.BaseLocation) 
+                .Include(t => t.TeamLeader)   
+                .Include(t => t.Members)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
@@ -31,6 +34,9 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
         {
             return await _context.RescueTeams
                 .AsNoTracking()
+                .Include(t => t.BaseLocation) 
+                .Include(t => t.TeamLeader)   
+                .Include(t => t.Members)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -41,7 +47,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
             if(team==null) {
                 throw new NotFoundException("Rescue team not found");
             }
-
+            
             var member = team.Members.FirstOrDefault(member=>member.Id == memberId);
             if(member==null){
                 return false;

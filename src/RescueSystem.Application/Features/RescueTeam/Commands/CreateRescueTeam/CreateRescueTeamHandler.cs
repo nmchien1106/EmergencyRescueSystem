@@ -6,6 +6,7 @@ using RescueSystem.Application.Features.RescueTeam.Command.CreateRescueTeam;
 using RescueSystem.Domain.Enums;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Application.Interfaces.Respositories;
+using System.Linq;
 
 namespace RescueSystem.Application.Features.RescueTeam.Commands.CreateRescueTeam 
 {
