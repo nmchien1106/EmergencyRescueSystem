@@ -59,6 +59,7 @@ namespace RescueSystem.Application.Features.Missions.Commands.CreateMission
             {
                 team.Status = TeamStatus.ON_MISSION;
                 team.UpdatedAt = DateTime.UtcNow.AddHours(7);
+                //TODO: CHECK thay cai null thanh description
                 await _rescueTeamRepository.UpdateTeamStatusAsync(team.Id, TeamStatus.ON_MISSION);
             }
 

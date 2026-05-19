@@ -7,5 +7,7 @@ namespace RescueSystem.Application.Features.RescueTeam.Commands.UpdateTeamStatus
     {
         public Guid TeamId { get; set; }
         public TeamStatus NewStatus { get; set; }
+
+        public string? Description {get; set;}
     }
 }

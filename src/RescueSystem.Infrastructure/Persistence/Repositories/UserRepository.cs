@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RescueSystem.Application.Common.Exception;
+using RescueSystem.Application.DTOs.Commander;
+using RescueSystem.Application.DTOs.User;
 using RescueSystem.Application.Interfaces.Respositories;
 using RescueSystem.Domain.Entities;
 using RescueSystem.Infrastructure.Persistence;
@@ -193,5 +195,96 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         
             return await _userManager.GetRolesAsync(user); 
         }
+
+        public async Task<IList<UserSystemDTO>> GetPendingApprovalUsers()
+        {
+            var query = from u in _context.Users
+                        where u.IsPendingApproval == true
+                        select new UserSystemDTO
+                        {
+                            Id = u.Id,
+                            FullName = u.FullName,
+                            Email = u.Email,
+                            UserName = u.UserName,
+                            PhoneNumber = u.PhoneNumber,
+                            Address = u.Address,
+                            DateOfBirth = u.DateOfBirth,
+                            Avatar = u.Avatar,
+                            IsActive = u.IsActive,
+                            IsPendingApproval = u.IsPendingApproval,
+                            CreatedAt = u.CreatedAt,
+                            Roles = (from userRole in _context.UserRoles
+                                    join role in _context.Roles on userRole.RoleId equals role.Id
+                                    where userRole.UserId == u.Id
+                                    select role.Name).ToList()
+                        };
+
+            return await query.ToListAsync();
+        }
+        public async Task<IList<UserSystemDTO>> GetRejectedUsers()
+        {
+            var query = from u in _context.Users
+                        where u.IsPendingApproval == false && u.IsActive==false
+                        select new UserSystemDTO
+                        {
+                            Id = u.Id,
+                            FullName = u.FullName,
+                            Email = u.Email,
+                            UserName = u.UserName,
+                            PhoneNumber = u.PhoneNumber,
+                            Address = u.Address,
+                            DateOfBirth = u.DateOfBirth,
+                            Avatar = u.Avatar,
+                            IsActive = u.IsActive,
+                            IsPendingApproval = u.IsPendingApproval,
+                            CreatedAt = u.CreatedAt,
+                            Roles = (from userRole in _context.UserRoles
+                                    join role in _context.Roles on userRole.RoleId equals role.Id
+                                    where userRole.UserId == u.Id
+                                    select role.Name).ToList()
+                        };
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IList<UserSystemDTO>> GetSystemUsersAsync(string? search, string? role)
+        {
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(u => u.FullName.Contains(search) 
+                //TODO: Them cai nay vo
+                // || u.UserName.Contains(search) 
+                // || u.Email.Contains(search)
+                );
+            }
+
+            // Lọc theo Role
+            if (!string.IsNullOrWhiteSpace(role))
+            {
+                query = query.Where(u => _context.UserRoles
+                    .Any(ur => ur.UserId == u.Id && 
+                            _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == role)));
+            }
+
+            return await query.Select(u => new UserSystemDTO
+            {
+                Id = u.Id,
+                FullName = u.FullName,
+                Email = u.Email,
+                UserName = u.UserName,
+                PhoneNumber = u.PhoneNumber,
+                IsActive = u.IsActive,
+                IsPendingApproval = u.IsPendingApproval, 
+                CreatedAt = u.CreatedAt,
+        
+                Roles = _context.UserRoles
+                    .Where(ur => ur.UserId == u.Id)
+                    .Select(ur => _context.Roles.FirstOrDefault(r => r.Id == ur.RoleId)!.Name!)
+                    .ToList()
+            }).ToListAsync();
+        }
     }
+
 }

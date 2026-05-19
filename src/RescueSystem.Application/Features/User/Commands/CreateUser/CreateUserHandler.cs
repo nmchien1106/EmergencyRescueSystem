@@ -17,6 +17,11 @@ namespace RescueSystem.Application.Features.User.Commands
             {
                 req.Roles = new List<string> { "Citizen" };
             }
+            bool isCitizenOnly = req.Roles.Count == 1 && req.Roles.Contains("Citizen", StringComparer.OrdinalIgnoreCase);
+
+            bool isActive = isCitizenOnly;
+            bool isPending = !isCitizenOnly;
+
             var user = new ApplicationUser
             {
                 Id = Guid.NewGuid(),
@@ -27,7 +32,10 @@ namespace RescueSystem.Application.Features.User.Commands
                 Address = req.Address,
                 DateOfBirth = req.DateOfBirth,
                 Avatar = req.Avatar,
+
                 IsActive = true,
+                IsPendingApproval = isPending,
+
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };

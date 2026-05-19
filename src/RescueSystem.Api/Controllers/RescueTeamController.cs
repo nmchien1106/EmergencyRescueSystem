@@ -79,7 +79,7 @@ namespace RescueSystem.Api.Controllers
             var command = new UpdateTeamStatusCommand
             {
                 TeamId = teamId,
-                NewStatus = newStatus
+                NewStatus = newStatus,
             };
 
             await mediator.Send(command);

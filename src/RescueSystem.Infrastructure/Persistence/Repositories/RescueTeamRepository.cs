@@ -106,7 +106,6 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories{
             if(team==null) {
                 throw new NotFoundException("Rescue team not found");
             }
-            
             team.Status = newStatus;
             team.UpdatedAt = DateTime.UtcNow;
             return await _context.SaveChangesAsync() > 0;

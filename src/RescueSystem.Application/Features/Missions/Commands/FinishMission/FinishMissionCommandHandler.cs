@@ -56,6 +56,7 @@ namespace RescueSystem.Application.Features.Missions.Commands.FinishMission
             {
                 team.Status = TeamStatus.AVAILABLE;
                 team.UpdatedAt = DateTime.UtcNow.AddHours(7);
+                //TODO: CHECK cai null kia xu li sao 
                 await _rescueTeamRepository.UpdateTeamStatusAsync(team.Id, TeamStatus.AVAILABLE);
             }
 

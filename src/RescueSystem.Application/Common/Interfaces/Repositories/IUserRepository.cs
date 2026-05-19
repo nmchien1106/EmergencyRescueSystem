@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using RescueSystem.Application.DTOs.User;
+using RescueSystem.Application.DTOs.Commander;
 
 namespace RescueSystem.Application.Interfaces.Respositories
 {
@@ -41,5 +43,10 @@ namespace RescueSystem.Application.Interfaces.Respositories
         Task UpdateUserRolesAsync(Guid userId, IList<string> newRoles);
 
         Task <IList<string>> GetUserRolesAsync(Guid userId);
+
+        Task<IList<UserSystemDTO>> GetPendingApprovalUsers();
+
+        Task<IList<UserSystemDTO>> GetRejectedUsers();
+        Task<IList<UserSystemDTO>> GetSystemUsersAsync(string? search, string? role);
     }
 }
