@@ -70,7 +70,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
         }
 
         // Update user
-        public async Task UpdateUserAsync(ApplicationUser user)
+        public async Task<bool> UpdateUserAsync(ApplicationUser user)
         {
             var existingUser = await _userManager.FindByIdAsync(user.Id.ToString());
 
@@ -90,6 +90,7 @@ namespace RescueSystem.Infrastructure.Persistence.Repositories
             {
                 throw new Exception("Failed to update user");
             }
+            return true;
         }
 
 
